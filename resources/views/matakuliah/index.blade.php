@@ -47,7 +47,7 @@
                             <td>{{ $mk->nama }}</td>
                             <td>{{ $mk->sks }}</td>
                             <td>{{ $mk->semester }}</td>
-                            <td>{{ $mk->prodi->nama_prodi }}</td>
+                            <td>{{ $mk->prodi->nama_prodi ?? '-' }}</td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <a href="{{ route('matakuliah.edit', $mk->id) }}" class="btn btn-sm btn-warning">

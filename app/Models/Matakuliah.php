@@ -10,8 +10,9 @@ class Matakuliah extends Model
     use HasFactory;
 
     protected $table = 'matakuliah';
+
     protected $fillable = ['kode_mk', 'nama', 'sks', 'semester', 'prodi_id'];
-    
+
     public function prodi()
     {
         return $this->belongsTo(Prodi::class, 'prodi_id');

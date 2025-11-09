@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Dosen;
 use App\Models\Mahasiswa;
 use App\Models\Matakuliah;
-use App\Models\User;
-use App\Models\Prodi;
 use App\Models\PengambilanMK;
-use Illuminate\Support\Facades\DB;
+use App\Models\Prodi;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
@@ -30,8 +30,8 @@ class AdminController extends Controller
 
         // Data for User Roles Chart
         $userRolesData = User::select('role', DB::raw('count(*) as total'))
-                            ->groupBy('role')
-                            ->get();
+            ->groupBy('role')
+            ->get();
         $userRoleLabels = $userRolesData->pluck('role');
         $userRoleCounts = $userRolesData->pluck('total');
 
@@ -42,7 +42,7 @@ class AdminController extends Controller
                     // Explicitly select columns to ensure foto_profil is included
                     $query->select('id', 'nim', 'nama', 'foto_profil', 'user_id', 'kelas_id', 'prodi_id', 'semester');
                 },
-                'mahasiswa.prodi' // We still need to load the prodi relationship on the mahasiswa model
+                'mahasiswa.prodi', // We still need to load the prodi relationship on the mahasiswa model
             ])
             ->orderBy('created_at', 'desc')
             ->get();
@@ -52,6 +52,7 @@ class AdminController extends Controller
             ->map(function ($group) {
                 $item = $group->first();
                 $item->total_mk = $group->count();
+
                 return $item;
             })
             ->take(5);
@@ -73,7 +74,7 @@ class AdminController extends Controller
     public function editProfile()
     {
         return view('admin.edit-profile', [
-            'user' => Auth::user()
+            'user' => Auth::user(),
         ]);
     }
 
@@ -101,6 +102,7 @@ class AdminController extends Controller
     public function krsMahasiswa()
     {
         $krsMahasiswa = PengambilanMK::with(['mahasiswa', 'matakuliah'])->get();
+
         return view('admin.krs-mahasiswa', compact('krsMahasiswa'));
     }
 

@@ -10,6 +10,7 @@ class Mahasiswa extends Model
     use HasFactory;
 
     protected $table = 'mahasiswa'; // Nama tabel
+
     protected $fillable = [
         'nim',
         'nama',
@@ -37,6 +38,7 @@ class Mahasiswa extends Model
     {
         return $this->belongsToMany(Matakuliah::class, 'pengambilan_mk', 'mahasiswa_id', 'matakuliah_id');
     }
+
     public function user()
     {
         return $this->belongsTo(User::class);

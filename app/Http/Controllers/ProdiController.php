@@ -11,6 +11,7 @@ class ProdiController extends Controller
     public function index()
     {
         $prodi = Prodi::all(); // Mengambil semua data prodi
+
         return view('prodi.index', compact('prodi'));
     }
 
@@ -28,6 +29,7 @@ class ProdiController extends Controller
         ]);
 
         Prodi::create($request->all());
+
         return redirect()->route('prodi.index')->with('success', 'Data program studi berhasil ditambahkan.');
     }
 
@@ -41,10 +43,11 @@ class ProdiController extends Controller
     public function update(Request $request, Prodi $prodi)
     {
         $request->validate([
-            'nama_prodi' => 'required|unique:prodi,nama_prodi,' . $prodi->id . '|max:255',
+            'nama_prodi' => 'required|unique:prodi,nama_prodi,'.$prodi->id.'|max:255',
         ]);
 
         $prodi->update($request->all());
+
         return redirect()->route('prodi.index')->with('success', 'Data program studi berhasil diperbarui.');
     }
 
@@ -52,7 +55,7 @@ class ProdiController extends Controller
     public function destroy(Prodi $prodi)
     {
         $prodi->delete();
+
         return redirect()->route('prodi.index')->with('success', 'Data program studi berhasil dihapus.');
     }
 }
-

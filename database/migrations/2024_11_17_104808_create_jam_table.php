@@ -15,7 +15,7 @@ return new class extends Migration
             $table->integer('durasi')->default(50); // Durasi dalam menit
             $table->boolean('waktu_shalat')->default(false); // Gunakan boolean
             $table->timestamps();
-        });        
+        });
     }
 
     public function down(): void

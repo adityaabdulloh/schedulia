@@ -12,6 +12,7 @@ class KelasController extends Controller
     public function index()
     {
         $kelas = Kelas::with('prodi')->get();
+
         return view('kelas.index', compact('kelas'));
     }
 
@@ -19,6 +20,7 @@ class KelasController extends Controller
     public function create()
     {
         $prodi = Prodi::all(); // Ambil semua data prodi
+
         return view('kelas.create', compact('prodi'));
     }
 
@@ -31,15 +33,15 @@ class KelasController extends Controller
         ]);
 
         Kelas::create($request->all());
+
         return redirect()->route('kelas.index')->with('success', 'Kelas berhasil ditambahkan.');
     }
-
-    
 
     // Menampilkan form untuk mengedit kelas
     public function edit(Kelas $kelas)
     {
         $prodi = Prodi::all(); // Ambil semua data prodi
+
         return view('kelas.edit', compact('kelas', 'prodi'));
     }
 
@@ -52,14 +54,15 @@ class KelasController extends Controller
         ]);
 
         $kelas->update($request->all());
+
         return redirect()->route('kelas.index')->with('success', 'Data kelas berhasil diperbarui.');
     }
-
 
     // Menghapus kelas
     public function destroy(Kelas $kelas)
     {
         $kelas->delete();
+
         return redirect()->route('kelas.index')->with('success', 'Kelas berhasil dihapus.');
     }
 
@@ -80,6 +83,7 @@ class KelasController extends Controller
         }
 
         $kelases = $query->get();
+
         return response()->json($kelases);
     }
 }

@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Kelas;
+use App\Models\Mahasiswa;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\Mahasiswa;
-use App\Models\Kelas; // Import the Kelas model
+use Illuminate\Support\Facades\Hash; // Import the Kelas model
 
 class MahasiswaSeeder extends Seeder
 {
@@ -25,7 +25,6 @@ class MahasiswaSeeder extends Seeder
         // Ambil ID kelas yang sudah ada untuk referensi
         $kelasTIA = Kelas::where('nama_kelas', 'TI-A')->where('prodi_id', $prodiTI)->value('id');
         $kelasSIB = Kelas::where('nama_kelas', 'SI-A')->where('prodi_id', $prodiSI)->value('id');
-
 
         $mahasiswaData = [
             [

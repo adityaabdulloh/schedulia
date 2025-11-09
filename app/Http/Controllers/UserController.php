@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\Prodi; // Import Prodi model
-use App\Models\Mahasiswa; // Import Mahasiswa model
-use App\Models\Dosen; // Import Dosen model
+use App\Models\Dosen;
 use App\Models\Kelas;
+use App\Models\Mahasiswa;
+use App\Models\Prodi; // Import Prodi model
+use App\Models\User; // Import Mahasiswa model
+use Illuminate\Http\Request; // Import Dosen model
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -18,6 +18,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all(); // Mengambil semua data pengguna
+
         return view('users.index', compact('users')); // Tampilkan di view users.index
     }
 
@@ -25,9 +26,10 @@ class UserController extends Controller
      * Tampilkan form untuk membuat user baru.
      */
     public function create()
-    { 
+    {
         $prodis = Prodi::all(); // Get all prodi for dropdown
         $kelases = Kelas::all();
+
         return view('users.create', compact('prodis', 'kelases'));
     }
 
@@ -87,7 +89,7 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
             'role' => 'required|string|in:admin,dosen,mahasiswa',
         ]);
 
@@ -103,6 +105,7 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
+
         return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
     }
 
@@ -113,7 +116,7 @@ class UserController extends Controller
     {
         $user = auth()->user(); // Ambil pengguna yang sedang login
 
-        if (!$user) {
+        if (! $user) {
             return redirect('/login')->withErrors(['error' => 'Anda belum login!']);
         }
 

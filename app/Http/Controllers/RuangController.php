@@ -11,6 +11,7 @@ class RuangController extends Controller
     public function index()
     {
         $ruang = Ruang::all();
+
         return view('ruang.index', compact('ruang'));
     }
 
@@ -29,6 +30,7 @@ class RuangController extends Controller
         ]);
 
         Ruang::create($request->all());
+
         return redirect()->route('ruang.index')->with('success', 'Ruang berhasil ditambahkan.');
     }
 
@@ -47,6 +49,7 @@ class RuangController extends Controller
         ]);
 
         $ruang->update($request->all());
+
         return redirect()->route('ruang.index')->with('success', 'Ruang berhasil diperbarui.');
     }
 
@@ -54,6 +57,7 @@ class RuangController extends Controller
     public function destroy(Ruang $ruang)
     {
         $ruang->delete();
+
         return redirect()->route('ruang.index')->with('success', 'Ruang berhasil dihapus.');
     }
 }

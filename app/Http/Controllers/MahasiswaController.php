@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Hari;
+use App\Models\JadwalKuliah;
 use App\Models\Kelas;
+use App\Models\Mahasiswa;
+use App\Models\PengambilanMK;
+use App\Models\Pengumuman;
 use App\Models\Prodi;
 use App\Models\User;
-use App\Models\Mahasiswa;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
-use App\Models\JadwalKuliah;
-use App\Models\Hari;
-use Carbon\Carbon;
-use App\Models\PengambilanMK;
-use App\Models\Pengumuman;
-
 
 class MahasiswaController extends Controller
 {
@@ -25,6 +24,7 @@ class MahasiswaController extends Controller
     {
         $user = Auth::user();
         $mahasiswa = Mahasiswa::where('user_id', $user->id)->firstOrFail();
+
         return view('mahasiswa.show', compact('mahasiswa'));
     }
 
@@ -32,6 +32,7 @@ class MahasiswaController extends Controller
     public function index()
     {
         $mahasiswas = Mahasiswa::with('prodi', 'kelas')->paginate(10);
+
         return view('mahasiswa.index', compact('mahasiswas'));
     }
 
@@ -49,7 +50,7 @@ class MahasiswaController extends Controller
             4 => 'Kamis',
             5 => 'Jumat',
             6 => 'Sabtu', // Asumsi Sabtu ada, jika tidak, tidak akan ditemukan
-            0 => 'Minggu',// Asumsi Minggu ada, jika tidak, tidak akan ditemukan
+            0 => 'Minggu', // Asumsi Minggu ada, jika tidak, tidak akan ditemukan
         ];
 
         $todayName = $dayMap[Carbon::now()->dayOfWeek];
@@ -61,12 +62,12 @@ class MahasiswaController extends Controller
 
         // Ambil semua matakuliah_id dari PengambilanMK yang statusnya 'approved' untuk mahasiswa ini
         $approvedMatakuliahIds = PengambilanMK::where('mahasiswa_id', $mahasiswa->id)
-                                            ->where('status', 'approved')
-                                            ->pluck('matakuliah_id')
-                                            ->toArray();
+            ->where('status', 'approved')
+            ->pluck('matakuliah_id')
+            ->toArray();
 
         // Jika hari ini adalah hari kerja dan ada di database, dan ada mata kuliah yang disetujui
-        if ($hari && !empty($approvedMatakuliahIds)) {
+        if ($hari && ! empty($approvedMatakuliahIds)) {
             $jadwalHariIni = JadwalKuliah::where('kelas_id', $mahasiswa->kelas_id)
                 ->where('hari_id', $hari->id)
                 ->whereHas('pengampu', function ($query) use ($approvedMatakuliahIds) {
@@ -81,10 +82,10 @@ class MahasiswaController extends Controller
         $pengumuman = Pengumuman::whereHas('jadwalKuliah', function ($query) use ($mahasiswa) {
             $query->where('kelas_id', $mahasiswa->kelas_id);
         })
-        ->with(['dosen', 'jadwalKuliah.pengampu.matakuliah'])
-        ->latest()
-        ->take(5)
-        ->get();
+            ->with(['dosen', 'jadwalKuliah.pengampu.matakuliah'])
+            ->latest()
+            ->take(5)
+            ->get();
 
         return view('dashboard-mahasiswa', compact('mahasiswa', 'jadwalHariIni', 'pengumuman'));
     }
@@ -94,6 +95,7 @@ class MahasiswaController extends Controller
     {
         $prodis = Prodi::all();
         $kelases = Kelas::all();
+
         return view('mahasiswa.create', compact('prodis', 'kelases'));
     }
 
@@ -137,6 +139,7 @@ class MahasiswaController extends Controller
     public function show($id)
     {
         $mahasiswa = Mahasiswa::with(['prodi', 'kelas'])->findOrFail($id);
+
         return view('mahasiswa.show', compact('mahasiswa'));
     }
 
@@ -146,6 +149,7 @@ class MahasiswaController extends Controller
         $mahasiswa = Mahasiswa::findOrFail($id);
         $prodis = Prodi::all(); // Fetch all prodis
         $kelases = Kelas::all(); // Fetch all kelases
+
         return view('mahasiswa.edit', compact('mahasiswa', 'prodis', 'kelases'));
     }
 
@@ -153,7 +157,7 @@ class MahasiswaController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nim' => 'required|unique:mahasiswa,nim,' . $id,
+            'nim' => 'required|unique:mahasiswa,nim,'.$id,
             'nama' => 'required',
             'kelas_id' => 'required|exists:kelas,id',
             'prodi_id' => 'required',
@@ -168,7 +172,7 @@ class MahasiswaController extends Controller
         if ($request->hasFile('foto_profil')) {
             // Hapus foto lama jika ada
             if ($mahasiswa->foto_profil) {
-                Storage::delete('public/foto_profil/' . $mahasiswa->foto_profil);
+                Storage::delete('public/foto_profil/'.$mahasiswa->foto_profil);
             }
 
             // Simpan foto baru
@@ -193,6 +197,7 @@ class MahasiswaController extends Controller
         $mahasiswa = Mahasiswa::where('user_id', $user->id)->firstOrFail();
         $prodis = Prodi::all();
         $kelases = Kelas::all();
+
         return view('mahasiswa.edit-profil', compact('mahasiswa', 'prodis', 'kelases'));
     }
 
@@ -212,7 +217,7 @@ class MahasiswaController extends Controller
         ]);
 
         $request->validate([
-            'nim' => 'required|unique:mahasiswa,nim,' . $mahasiswa->id,
+            'nim' => 'required|unique:mahasiswa,nim,'.$mahasiswa->id,
             'nama' => 'required',
             'kelas_id' => 'required|exists:kelas,id',
             'prodi_id' => 'required',
@@ -225,7 +230,7 @@ class MahasiswaController extends Controller
         if ($request->hasFile('foto_profil')) {
             // Hapus foto lama jika ada
             if ($mahasiswa->foto_profil) {
-                Storage::delete('public/foto_profil/' . $mahasiswa->foto_profil);
+                Storage::delete('public/foto_profil/'.$mahasiswa->foto_profil);
             }
 
             // Simpan foto baru
@@ -255,6 +260,7 @@ class MahasiswaController extends Controller
             // Hapus juga data user yang terkait
             User::destroy($userId); // Use the retrieved user_id
         });
+
         return redirect()->route('mahasiswa.index')->with('success', 'Mahasiswa berhasil dihapus.');
     }
 }

@@ -23,7 +23,7 @@ class RehashUserPasswords extends Command
 
         foreach ($users as $user) {
             // Cek jika kolom password tidak kosong dan belum di-hash dengan Bcrypt ($2y$)
-            if (!empty($user->password) && !Str::startsWith($user->password, '$2y$')) {
+            if (! empty($user->password) && ! Str::startsWith($user->password, '$2y$')) {
                 $plainPassword = $user->password; // Asumsikan nilai yang tersimpan adalah password asli
 
                 // Lakukan hashing ulang dan simpan

@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Pengampu;
 use App\Models\Dosen;
-use App\Models\MataKuliah;
 use App\Models\Kelas;
+use App\Models\MataKuliah;
+use App\Models\Pengampu;
+use Illuminate\Database\Seeder;
 
 class PengampuSeeder extends Seeder
 {

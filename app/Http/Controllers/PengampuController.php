@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pengampu;
 use App\Models\Dosen;
-use App\Models\Matakuliah;
 use App\Models\Kelas;
+use App\Models\Matakuliah;
+use App\Models\Pengampu;
 use App\Models\Prodi; // Import Prodi model
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,17 +20,18 @@ class PengampuController extends Controller
         // Check if the user is logged in and has a role
         if ($user) {
             if ($user->role === 'dosen') {
-                if (!$user->dosen) {
+                if (! $user->dosen) {
                     $pengampus = $query->whereRaw('1 = 0')->paginate(10);
+
                     return view('pengampu.index', compact('pengampus'));
                 }
                 $dosenId = $user->dosen->id;
 
                 $query->where(function ($q) use ($dosenId) {
                     $q->where('dosen_id', $dosenId) // Check primary lecturer
-                      ->orWhereHas('dosen', function ($q2) use ($dosenId) { // Check additional lecturers via pivot table
-                          $q2->where('dosen.id', $dosenId);
-                      });
+                        ->orWhereHas('dosen', function ($q2) use ($dosenId) { // Check additional lecturers via pivot table
+                            $q2->where('dosen.id', $dosenId);
+                        });
                 });
             }
             // If the user is 'admin', no additional filtering is needed based on user ID.
@@ -40,13 +41,12 @@ class PengampuController extends Controller
             return redirect()->route('login')->with('error', 'Silakan login untuk mengakses halaman ini.');
         }
 
-
         if ($request->has('search')) {
-            $query->whereHas('matakuliah', function($q) use ($request) {
-                $q->where('nama', 'like', '%' . $request->search . '%');
-            })->orWhereHas('Kelas', function($q) use ($request) {
-                $q->where('nama_kelas', 'like', '%' . $request->search . '%');
-            })->orWhere('tahun_akademik', 'like', '%' . $request->search . '%');
+            $query->whereHas('matakuliah', function ($q) use ($request) {
+                $q->where('nama', 'like', '%'.$request->search.'%');
+            })->orWhereHas('Kelas', function ($q) use ($request) {
+                $q->where('nama_kelas', 'like', '%'.$request->search.'%');
+            })->orWhere('tahun_akademik', 'like', '%'.$request->search.'%');
         }
 
         $pengampus = $query->with(['dosen', 'matakuliah', 'Kelas', 'prodi'])->paginate(10);
@@ -57,6 +57,7 @@ class PengampuController extends Controller
     public function create()
     {
         $prodis = Prodi::all(); // Get all prodi for dropdown
+
         return view('pengampu.create', [
             'prodis' => $prodis,
             'matakuliahs' => [], // Initially empty
@@ -124,6 +125,7 @@ class PengampuController extends Controller
         $matakuliahs = Matakuliah::all();
         $kelas = Kelas::all();
         $prodis = Prodi::all(); // Get all prodi for dropdown
+
         return view('pengampu.edit', compact('pengampu', 'dosens', 'matakuliahs', 'kelas', 'prodis'));
     }
 
@@ -171,6 +173,7 @@ class PengampuController extends Controller
     public function destroy(Pengampu $pengampu)
     {
         $pengampu->delete();
+
         return redirect()->route('pengampu.index')->with('success', 'Data berhasil dihapus');
     }
 

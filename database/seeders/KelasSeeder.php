@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Kelas;
 use App\Models\Prodi;
+use Illuminate\Database\Seeder;
 
 class KelasSeeder extends Seeder
 {
@@ -13,7 +13,6 @@ class KelasSeeder extends Seeder
      */
     public function run(): void
     {
-        
 
         // Ambil prodi yang ada untuk dihubungkan dengan kelas
         $prodiTI = Prodi::where('nama_prodi', 'Teknik Informatika')->first();
@@ -36,7 +35,7 @@ class KelasSeeder extends Seeder
         ];
 
         foreach ($kelases as $kelas) {
-            if (!empty($kelas['prodi_id'])) {
+            if (! empty($kelas['prodi_id'])) {
                 Kelas::updateOrCreate(['nama_kelas' => $kelas['nama_kelas']], $kelas);
             }
         }

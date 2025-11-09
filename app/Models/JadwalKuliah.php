@@ -9,8 +9,8 @@ class JadwalKuliah extends Model
 {
     use HasFactory;
 
-
     protected $table = 'jadwal_kuliah';
+
     protected $fillable = ['pengampu_id', 'ruang_id', 'hari_id', 'jam_id', 'tahun_akademik', 'semester', 'kelas_id'];
 
     public function pengampu()
@@ -42,6 +42,7 @@ class JadwalKuliah extends Model
     {
         return $this->hasMany(JadwalDosen::class);
     }
+
     public function jadwalMahasiswa()
     {
         return $this->hasMany(JadwalMahasiswa::class);

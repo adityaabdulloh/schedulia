@@ -10,6 +10,7 @@ class Ruang extends Model
     use HasFactory;
 
     protected $table = 'ruang';
+
     protected $fillable = [
         'nama_ruang',
         'kapasitas',

@@ -10,6 +10,7 @@ class Dosen extends Model
     use HasFactory;
 
     protected $table = 'dosen';
+
     protected $fillable = [
         'nama',
         'nip',
@@ -19,6 +20,7 @@ class Dosen extends Model
     ];
 
     protected $with = ['prodi'];
+
     public function matakuliah()
     {
         return $this->hasMany(Matakuliah::class, 'dosen_id');

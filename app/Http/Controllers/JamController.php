@@ -1,15 +1,17 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Jam;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class JamController extends Controller
 {
     public function index()
     {
         $jamList = Jam::orderBy('jam_mulai')->get();
+
         return view('jam.index', compact('jamList'));
     }
 
@@ -24,25 +26,25 @@ class JamController extends Controller
             'jam_mulai' => 'required|date_format:H:i',
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
             'durasi' => 'nullable|integer|min:10|max:240',
-            'waktu_shalat' => 'boolean'
+            'waktu_shalat' => 'boolean',
         ]);
 
         try {
             $jamMulai = Carbon::parse($request->jam_mulai);
             $jamSelesai = Carbon::parse($request->jam_selesai);
-            
+
             Jam::create([
                 'jam_mulai' => $jamMulai,
                 'jam_selesai' => $jamSelesai,
                 'durasi' => $jamMulai->diffInMinutes($jamSelesai),
-                'waktu_shalat' => $request->boolean('waktu_shalat', false)
+                'waktu_shalat' => $request->boolean('waktu_shalat', false),
             ]);
 
             return redirect()->route('jam.index')
                 ->with('success', 'Data jam berhasil ditambahkan');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
+                ->with('error', 'Terjadi kesalahan: '.$e->getMessage())
                 ->withInput();
         }
     }
@@ -50,6 +52,7 @@ class JamController extends Controller
     public function edit($id)
     {
         $jam = Jam::findOrFail($id);
+
         return view('jam.edit', compact('jam'));
     }
 
@@ -59,12 +62,12 @@ class JamController extends Controller
             'jam_mulai' => 'required|date_format:H:i',
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
             'durasi' => 'nullable|integer|min:10|max:240',
-            'waktu_shalat' => 'boolean'
+            'waktu_shalat' => 'boolean',
         ]);
 
         try {
             $jam = Jam::findOrFail($id);
-            
+
             $jamMulai = Carbon::parse($request->jam_mulai);
             $jamSelesai = Carbon::parse($request->jam_selesai);
 
@@ -72,14 +75,14 @@ class JamController extends Controller
                 'jam_mulai' => $jamMulai,
                 'jam_selesai' => $jamSelesai,
                 'durasi' => $jamMulai->diffInMinutes($jamSelesai),
-                'waktu_shalat' => $request->boolean('waktu_shalat', false)
+                'waktu_shalat' => $request->boolean('waktu_shalat', false),
             ]);
 
             return redirect()->route('jam.index')
                 ->with('success', 'Data jam berhasil diperbarui');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
+                ->with('error', 'Terjadi kesalahan: '.$e->getMessage())
                 ->withInput();
         }
     }
@@ -88,7 +91,7 @@ class JamController extends Controller
     {
         try {
             $jam = Jam::findOrFail($id);
-            
+
             // Cek apakah jam sudah digunakan di jadwal
             if ($jam->jadwalKuliah()->exists()) {
                 return redirect()->back()
@@ -96,11 +99,12 @@ class JamController extends Controller
             }
 
             $jam->delete();
+
             return redirect()->route('jam.index')
                 ->with('success', 'Data jam berhasil dihapus');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+                ->with('error', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
 }

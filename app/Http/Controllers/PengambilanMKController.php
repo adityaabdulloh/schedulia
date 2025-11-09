@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PengambilanMK;
+use App\Models\Mahasiswa;
 use App\Models\Matakuliah;
-use App\Models\Mahasiswa; // Add this line
+use App\Models\PengambilanMK; // Add this line
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class PengambilanMKController extends Controller
 {
@@ -17,9 +17,9 @@ class PengambilanMKController extends Controller
         $this->middleware('role:admin')->except(['indexForStudent', 'createForStudent', 'storeForStudent', 'destroyForStudent', 'exportKRS_PDF']); // Only admin can access admin methods
     }
 
-    //===================================================================
+    // ===================================================================
     // METHOD UNTUK MAHASISWA
-    //===================================================================
+    // ===================================================================
 
     public function indexForStudent()
     {
@@ -32,20 +32,20 @@ class PengambilanMKController extends Controller
     public function createForStudent()
     {
         $mahasiswa = Auth::user()->mahasiswa;
-        
+
         // Ambil ID matakuliah yang sudah diambil dan divalidasi (status 'approved') oleh mahasiswa
         $approvedMKIds = PengambilanMK::where('mahasiswa_id', $mahasiswa->id)
-                                        ->where('status', 'approved')
-                                        ->pluck('matakuliah_id')
-                                        ->toArray();
+            ->where('status', 'approved')
+            ->pluck('matakuliah_id')
+            ->toArray();
 
         // Ambil semua matakuliah yang sesuai dengan prodi mahasiswa dan semester mahasiswa saat ini,
         // dan yang belum diambil serta divalidasi
         $matakuliahTersedia = Matakuliah::where('prodi_id', $mahasiswa->prodi_id)
-                                        ->where('semester', $mahasiswa->semester)
-                                        ->whereNotIn('id', $approvedMKIds) // Exclude approved courses
-                                        ->get();
-        
+            ->where('semester', $mahasiswa->semester)
+            ->whereNotIn('id', $approvedMKIds) // Exclude approved courses
+            ->get();
+
         // Ambil ID matakuliah yang sudah diambil oleh mahasiswa (termasuk pending)
         // Ini mungkin tidak lagi diperlukan di view jika kita sudah memfilter matakuliahTersedia
         // Namun, jika view masih menggunakannya untuk menampilkan status "sudah diambil" untuk pending, kita bisa biarkan.
@@ -67,13 +67,14 @@ class PengambilanMKController extends Controller
             ->where('matakuliah_id', $request->matakuliah_id)
             ->exists();
 
-        if (!$isExist) {
+        if (! $isExist) {
             PengambilanMK::create([
                 'mahasiswa_id' => $mahasiswa->id,
                 'matakuliah_id' => $request->matakuliah_id,
                 'semester' => $mahasiswa->semester, // Asumsi semester diambil dari data mahasiswa
                 'status' => 'pending',
             ]);
+
             return redirect()->route('pengambilan-mk.create')->with('success', 'Mata kuliah berhasil diambil.');
         }
 
@@ -83,13 +84,14 @@ class PengambilanMKController extends Controller
     public function destroyForStudent($matakuliah_id)
     {
         $mahasiswa = Auth::user()->mahasiswa;
-        
+
         $pengambilanMK = PengambilanMK::where('mahasiswa_id', $mahasiswa->id)
             ->where('matakuliah_id', $matakuliah_id)
             ->first();
 
         if ($pengambilanMK) {
             $pengambilanMK->delete();
+
             return redirect()->route('pengambilan-mk.create')->with('success', 'Mata kuliah berhasil dilepas.');
         }
 
@@ -100,15 +102,15 @@ class PengambilanMKController extends Controller
     {
         $mahasiswa = Auth::user()->mahasiswa;
         $pengambilanMKs = PengambilanMK::where('mahasiswa_id', $mahasiswa->id)->with('matakuliah')->get();
-        
+
         $pdf = PDF::loadView('pengambilanmk.krs_pdf', compact('pengambilanMKs', 'mahasiswa'));
-        return $pdf->stream('krs-' . $mahasiswa->nim . '.pdf');
+
+        return $pdf->stream('krs-'.$mahasiswa->nim.'.pdf');
     }
 
-
-    //===================================================================
+    // ===================================================================
     // METHOD UNTUK ADMIN (SUDAH ADA SEBELUMNYA)
-    //===================================================================
+    // ===================================================================
 
     // Menampilkan daftar pengambilan matakuliah
     public function index(Request $request)
@@ -121,11 +123,11 @@ class PengambilanMKController extends Controller
 
         if ($search) {
             $query->whereHas('mahasiswa', function ($q) use ($search) {
-                $q->where('nama', 'like', '%' . $search . '%')
-                  ->orWhere('nim', 'like', '%' . $search . '%');
+                $q->where('nama', 'like', '%'.$search.'%')
+                    ->orWhere('nim', 'like', '%'.$search.'%');
             })->orWhereHas('matakuliah', function ($q) use ($search) {
-                $q->where('nama', 'like', '%' . $search . '%')
-                  ->orWhere('kode_mk', 'like', '%' . $search . '%');
+                $q->where('nama', 'like', '%'.$search.'%')
+                    ->orWhere('kode_mk', 'like', '%'.$search.'%');
             });
         }
 
@@ -143,6 +145,7 @@ class PengambilanMKController extends Controller
     {
         $mahasiswas = Mahasiswa::all();
         $matakuliahs = Matakuliah::all();
+
         return view('pengambilan_mk.create', compact('mahasiswas', 'matakuliahs'));
     }
 
@@ -166,6 +169,7 @@ class PengambilanMKController extends Controller
     public function show($id)
     {
         $pengambilanMK = PengambilanMK::findOrFail($id);
+
         return view('pengambilan_mk.show', compact('pengambilanMK'));
     }
 
@@ -175,6 +179,7 @@ class PengambilanMKController extends Controller
         $pengambilanMK = PengambilanMK::findOrFail($id);
         $mahasiswas = Mahasiswa::all();
         $matakuliahs = Matakuliah::all();
+
         return view('pengambilan_mk.edit', compact('pengambilanMK', 'mahasiswas', 'matakuliahs'));
     }
 
@@ -208,6 +213,7 @@ class PengambilanMKController extends Controller
     public function adminValidationIndex()
     {
         $pendingPengambilanMKs = PengambilanMK::where('status', 'pending')->with('mahasiswa', 'matakuliah')->get();
+
         return view('pengambilanmk.admin_validation', compact('pendingPengambilanMKs'));
     }
 
@@ -227,6 +233,7 @@ class PengambilanMKController extends Controller
     public function showStudentKRS(Mahasiswa $mahasiswa)
     {
         $pengambilanMKs = PengambilanMK::where('mahasiswa_id', $mahasiswa->id)->with('matakuliah')->get();
+
         return view('pengambilanmk.student_krs_detail', compact('pengambilanMKs', 'mahasiswa'));
     }
 
@@ -244,5 +251,3 @@ class PengambilanMKController extends Controller
         return view('admin.pengambilan-mk');
     }
 }
-
-    

@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Dosen;
 use App\Models\Prodi;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Seeder;
 
 class DosenSeeder extends Seeder
 {
@@ -26,14 +25,14 @@ class DosenSeeder extends Seeder
                 'nip' => '198501012010121001', // Menggunakan 'nidn' sesuai error
                 'nama' => 'Dr. Budi Santoso, M.Kom.',
                 'email' => 'budi.santoso@example.com',
-                
+
                 'prodi_id' => $prodiTI->id,
             ],
             [
                 'nip' => '199002022015032002', // Menggunakan 'nidn'
                 'nama' => 'Siti Aminah, S.Kom., M.T.',
                 'email' => 'siti.aminah@example.com',
-                
+
                 'prodi_id' => $prodiSI->id,
             ],
         ];

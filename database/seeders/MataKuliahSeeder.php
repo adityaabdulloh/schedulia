@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\MataKuliah;
 use App\Models\Prodi;
+use Illuminate\Database\Seeder;
 
 class MataKuliahSeeder extends Seeder
 {
@@ -13,7 +13,6 @@ class MataKuliahSeeder extends Seeder
      */
     public function run(): void
     {
-        
 
         // Ambil prodi yang ada
         $prodiTI = Prodi::where('nama_prodi', 'Teknik Informatika')->first();
@@ -46,9 +45,10 @@ class MataKuliahSeeder extends Seeder
 
         foreach ($matakuliahs as $matakuliah) {
             if ($matakuliah['prodi_id']) { // Hanya buat jika prodi ditemukan
-            if (!empty($matakuliah['prodi_id'])) { // Hanya buat jika prodi ditemukan
-                MataKuliah::updateOrCreate(['kode_mk' => $matakuliah['kode_mk']], $matakuliah);
+                if (! empty($matakuliah['prodi_id'])) { // Hanya buat jika prodi ditemukan
+                    MataKuliah::updateOrCreate(['kode_mk' => $matakuliah['kode_mk']], $matakuliah);
+                }
             }
         }
     }
-}}
+}

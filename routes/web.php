@@ -1,26 +1,26 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\DosenController;
-use App\Http\Controllers\MataKuliahController;
-use App\Http\Controllers\ProdiController;
-use App\Http\Controllers\RuangController;
-use App\Http\Controllers\KelasController;
-use App\Http\Controllers\JamController;
-use App\Http\Controllers\PengampuController;
-use App\Http\Controllers\JadwalKuliahController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\MahasiswaController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\JadwalDosenController;
-use App\Http\Controllers\JadwalMahasiswaController;
-use App\Http\Controllers\PengambilanMKController;
-use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\DosenController;
 use App\Http\Controllers\DosenFeatureController;
+use App\Http\Controllers\JadwalDosenController;
+use App\Http\Controllers\JadwalKuliahController;
+use App\Http\Controllers\JadwalMahasiswaController;
+use App\Http\Controllers\JamController;
+use App\Http\Controllers\KelasController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\MataKuliahController;
+use App\Http\Controllers\PengambilanMKController;
+use App\Http\Controllers\PengampuController;
+use App\Http\Controllers\PengumumanController;
+use App\Http\Controllers\ProdiController;
+use App\Http\Controllers\RuangController;
+use App\Http\Controllers\UserController;
 use App\Models\Mahasiswa;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
     Route::get('dashboard-mahasiswa', [MahasiswaController::class, 'studentDashboard'])->name('mahasiswa.dashboard');
@@ -52,7 +52,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 Route::middleware(['auth', 'role:dosen'])->group(function () {
     Route::get('dashboard-dosen', [DosenController::class, 'dashboard'])->name('dosen.dashboard');
-        Route::get('dosen/profil', [DosenController::class, 'profil'])->name('dosen.profil');
+    Route::get('dosen/profil', [DosenController::class, 'profil'])->name('dosen.profil');
     Route::get('dosen/profil/edit', [DosenController::class, 'editProfile'])->name('dosen.edit-profile');
     Route::put('dosen/profil', [DosenController::class, 'updateProfile'])->name('dosen.update-profile');
 
@@ -67,20 +67,14 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
 });
 
 //     // Route untuk pengambilan MK oleh mahasiswa
-    Route::get('krs', [PengambilanMKController::class, 'indexForStudent'])->name('krs.index');
-    Route::get('pengambilan-mk', [PengambilanMKController::class, 'createForStudent'])->name('pengambilan-mk.create');
-    Route::post('pengambilan-mk', [PengambilanMKController::class, 'storeForStudent'])->name('pengambilan-mk.store');
-    Route::delete('pengambilan-mk/{matakuliah_id}', [PengambilanMKController::class, 'destroyForStudent'])->name('pengambilan-mk.destroy');
-    Route::get('krs/export-pdf', [PengambilanMKController::class, 'exportKRS_PDF'])->name('krs.export-pdf');
+Route::get('krs', [PengambilanMKController::class, 'indexForStudent'])->name('krs.index');
+Route::get('pengambilan-mk', [PengambilanMKController::class, 'createForStudent'])->name('pengambilan-mk.create');
+Route::post('pengambilan-mk', [PengambilanMKController::class, 'storeForStudent'])->name('pengambilan-mk.store');
+Route::delete('pengambilan-mk/{matakuliah_id}', [PengambilanMKController::class, 'destroyForStudent'])->name('pengambilan-mk.destroy');
+Route::get('krs/export-pdf', [PengambilanMKController::class, 'exportKRS_PDF'])->name('krs.export-pdf');
 // });
 
 // Contoh route utama (landing page)
-
-
-
-
-
-
 
 // Resource routes
 Route::resource('matakuliah', MataKuliahController::class);
@@ -89,13 +83,12 @@ Route::resource('dosen', DosenController::class);
 Route::resource('prodi', ProdiController::class);
 Route::resource('ruang', RuangController::class);
 Route::resource('kelas', KelasController::class)->parameters([
-    'kelas' => 'kelas'
+    'kelas' => 'kelas',
 ]);
 Route::get('/get-kelas-by-prodi/{prodi_id}', [KelasController::class, 'getKelasByProdi'])->name('get.kelas.by.prodi');
 Route::resource('jam', JamController::class)->parameters([
-    'jam' => 'jam'
+    'jam' => 'jam',
 ]);
-
 
 Route::get('/pengampu/dosen', [PengampuController::class, 'testDosenRoute']);
 Route::get('/get-matakuliah-dosen/{prodi_id}', [PengampuController::class, 'getMatakuliahDosen'])->name('get.matakuliah.dosen');
@@ -124,7 +117,6 @@ Route::get('/dosen/navigation', [DosenController::class, 'navigation'])->name('d
 Route::get('/ruang/navigation', [RuangController::class, 'navigation'])->name('ruang.navigation');
 Route::get('/jam/navigation', [JamController::class, 'navigation'])->name('jam.navigation');
 Route::get('/pengampu/navigation', [PengampuController::class, 'navigation'])->name('pengampu.navigation');
-
 
 Route::view('/', 'welcome');
 

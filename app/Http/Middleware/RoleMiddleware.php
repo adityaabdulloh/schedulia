@@ -20,6 +20,7 @@ class RoleMiddleware
         if (Auth::check() && Auth::user()->role == $role) {
             return $next($request);
         }
+
         return redirect('/unauthorized'); // Atau tampilkan pesan "403 Forbidden"
     }
 }

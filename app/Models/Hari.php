@@ -10,6 +10,7 @@ class Hari extends Model
     use HasFactory;
 
     protected $table = 'hari';
+
     protected $fillable = ['nama_hari'];
 
     public function jadwalKuliah()

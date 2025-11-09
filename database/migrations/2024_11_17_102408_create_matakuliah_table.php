@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('semester');
             $table->foreignId('prodi_id')->constrained('prodi');
             $table->timestamps();
-        });        
+        });
     }
 
     /**

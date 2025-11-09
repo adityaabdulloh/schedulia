@@ -3,18 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dosen;
+use App\Models\Hari;
+use App\Models\JadwalKuliah;
+use App\Models\Pengampu;
 use App\Models\Prodi;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use App\Models\JadwalKuliah;
-use App\Models\Hari;
-use App\Models\Pengampu;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class DosenController extends Controller
 {
@@ -24,7 +23,7 @@ class DosenController extends Controller
         $dosen = Dosen::where('email', $user->email)->firstOrFail();
 
         // Ambil semua ID pengampu untuk dosen ini
-        $pengampuIds = Pengampu::whereHas('dosen', function($query) use ($dosen) {
+        $pengampuIds = Pengampu::whereHas('dosen', function ($query) use ($dosen) {
             $query->where('dosen.id', $dosen->id);
         })->pluck('id');
 
@@ -36,25 +35,25 @@ class DosenController extends Controller
             ->get();
 
         // Hitung total mata kuliah yang diampu dosen
-        $totalCourses = Pengampu::whereHas('dosen', function($query) use ($dosen) {
+        $totalCourses = Pengampu::whereHas('dosen', function ($query) use ($dosen) {
             $query->where('dosen.id', $dosen->id);
         })->distinct('matakuliah_id')->count('matakuliah_id');
 
         // Ambil semua kelas_id yang diampu oleh dosen ini
-        $kelasDiampuIds = Pengampu::whereHas('dosen', function($query) use ($dosen) {
+        $kelasDiampuIds = Pengampu::whereHas('dosen', function ($query) use ($dosen) {
             $query->where('dosen.id', $dosen->id);
         })->pluck('kelas_id')->unique();
 
         // Ambil mahasiswa yang berada di kelas-kelas yang diampu dosen ini
         $mahasiswaBimbingan = \App\Models\Mahasiswa::whereIn('kelas_id', $kelasDiampuIds)
-                                                ->with('kelas')
-                                                ->get();
+            ->with('kelas')
+            ->get();
 
         // Kelompokkan mahasiswa berdasarkan kelas dan hitung jumlahnya
         $mahasiswaPerKelas = $mahasiswaBimbingan->groupBy('kelas.nama_kelas')
-                                                ->map(function ($students) {
-                                                    return $students->count();
-                                                });
+            ->map(function ($students) {
+                return $students->count();
+            });
 
         return view('dashboard-dosen', compact('dosen', 'semuaJadwal', 'totalCourses', 'mahasiswaPerKelas'));
     }
@@ -66,15 +65,14 @@ class DosenController extends Controller
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('nama', 'like', '%' . $search . '%')
-                  ->orWhere('nip', 'like', '%' . $search . '%')
-                  ->orWhere('email', 'like', '%' . $search . '%');
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', '%'.$search.'%')
+                    ->orWhere('nip', 'like', '%'.$search.'%')
+                    ->orWhere('email', 'like', '%'.$search.'%');
             });
         }
 
         $dosen = $query->paginate(10)->appends($request->query()); // 10 items per page and append query string
-
 
         return view('dosen.index', compact('dosen'));
     }
@@ -89,6 +87,7 @@ class DosenController extends Controller
     public function create()
     {
         $prodi = Prodi::all(); // Ambil semua data prodi
+
         return view('dosen.create', compact('prodi'));
     }
 
@@ -122,6 +121,7 @@ class DosenController extends Controller
     public function edit(Dosen $dosen)
     {
         $prodi = Prodi::all(); // Ambil semua data prodi
+
         return view('dosen.edit', compact('dosen', 'prodi'));
     }
 
@@ -129,9 +129,9 @@ class DosenController extends Controller
     public function update(Request $request, Dosen $dosen)
     {
         $request->validate([
-            'nip' => 'required|unique:dosen,nip,' . $dosen->id,
+            'nip' => 'required|unique:dosen,nip,'.$dosen->id,
             'nama' => 'required',
-            'email' => 'required|email|unique:dosen,email,' . $dosen->id,
+            'email' => 'required|email|unique:dosen,email,'.$dosen->id,
             'prodi_id' => 'required|exists:prodi,id',
             'foto_profil' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
@@ -143,11 +143,11 @@ class DosenController extends Controller
             if ($request->hasFile('foto_profil')) {
                 // Hapus foto lama jika ada
                 if ($dosen->foto_profil) {
-                    Storage::delete('public/foto_profil/' . $dosen->foto_profil);
+                    Storage::delete('public/foto_profil/'.$dosen->foto_profil);
                 }
 
-                $fileName = time() . '.' . $request->foto_profil->extension();
-                Log::info('Uploading file: ' . $fileName);
+                $fileName = time().'.'.$request->foto_profil->extension();
+                Log::info('Uploading file: '.$fileName);
                 $request->foto_profil->storeAs('public/foto_profil', $fileName);
                 $data['foto_profil'] = $fileName;
             }
@@ -183,6 +183,7 @@ class DosenController extends Controller
     public function profil()
     {
         $dosen = auth()->user()->dosen; // Assuming a 'dosen' relationship on the User model
+
         return view('dosen.profil', compact('dosen'));
     }
 
@@ -190,6 +191,7 @@ class DosenController extends Controller
     {
         $dosen = auth()->user()->dosen;
         $prodi = Prodi::all(); // Assuming Prodi model exists for dropdown
+
         return view('dosen.edit-profile', compact('dosen', 'prodi'));
     }
 
@@ -199,8 +201,8 @@ class DosenController extends Controller
 
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nip' => 'required|string|max:255|unique:dosen,nip,' . $dosen->id,
-            'email' => 'required|string|email|max:255|unique:dosen,email,' . $dosen->id,
+            'nip' => 'required|string|max:255|unique:dosen,nip,'.$dosen->id,
+            'email' => 'required|string|email|max:255|unique:dosen,email,'.$dosen->id,
             'prodi_id' => 'required|exists:prodi,id',
             'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'password' => 'nullable|string|min:8|confirmed',
@@ -213,15 +215,15 @@ class DosenController extends Controller
             if ($request->hasFile('foto_profil')) {
                 // Delete old profile photo if exists
                 if ($dosen->foto_profil) {
-                    Storage::delete('public/foto_profil/' . $dosen->foto_profil);
+                    Storage::delete('public/foto_profil/'.$dosen->foto_profil);
                 }
-                $fileName = time() . '.' . $request->foto_profil->extension();
+                $fileName = time().'.'.$request->foto_profil->extension();
                 $request->foto_profil->storeAs('public/foto_profil', $fileName);
                 $data['foto_profil'] = $fileName;
             } elseif ($request->has('remove_foto_profil') && $request->input('remove_foto_profil') == 1) {
                 // Remove existing profile photo
                 if ($dosen->foto_profil) {
-                    Storage::delete('public/foto_profil/' . $dosen->foto_profil);
+                    Storage::delete('public/foto_profil/'.$dosen->foto_profil);
                 }
                 $data['foto_profil'] = null;
             }

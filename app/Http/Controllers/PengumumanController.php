@@ -34,7 +34,7 @@ class PengumumanController extends Controller
         // Get the authenticated user's related Dosen model
         $dosen = Auth::user()->dosen;
 
-        if (!$dosen) {
+        if (! $dosen) {
             return redirect()->back()->with('error', 'Hanya dosen yang bisa membuat pengumuman.');
         }
 

@@ -3,23 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Matakuliah;
-use Illuminate\Http\Request;
 use App\Models\Prodi;
+use Illuminate\Http\Request;
 
 class MatakuliahController extends Controller
 {
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $mataKuliah = MataKuliah::where('nama', 'like', '%' . $search . '%')->paginate(10); // Mengambil 10 data per halaman
+        $mataKuliah = MataKuliah::where('nama', 'like', '%'.$search.'%')->paginate(10); // Mengambil 10 data per halaman
+
         return view('matakuliah.index', compact('mataKuliah'));
     }
-    
 
     // Menampilkan form untuk menambah matakuliah
     public function create()
     {
         $prodi = Prodi::all();
+
         return view('matakuliah.create', compact('prodi'));
     }
 
@@ -48,12 +49,13 @@ class MatakuliahController extends Controller
 
         try {
             MataKuliah::create($request->all());
+
             return redirect()->route('matakuliah.index')
-                           ->with('success', 'Data mata kuliah berhasil ditambahkan');
+                ->with('success', 'Data mata kuliah berhasil ditambahkan');
         } catch (\Exception $e) {
             return redirect()->back()
-                           ->with('error', 'Terjadi kesalahan saat menyimpan data')
-                           ->withInput();
+                ->with('error', 'Terjadi kesalahan saat menyimpan data')
+                ->withInput();
         }
     }
 
@@ -62,15 +64,14 @@ class MatakuliahController extends Controller
     {
         $mataKuliah = MataKuliah::findOrFail($id);
         $prodi = Prodi::all();
+
         return view('matakuliah.edit', compact('mataKuliah', 'prodi'));
     }
-
-
 
     public function update(Request $request, $id)
     {
         $mataKuliah = MataKuliah::findOrFail($id);
-        
+
         // Validasi input
         $request->validate([
             'kode_mk' => 'required|unique:matakuliah,kode_mk,'.$id,
@@ -93,12 +94,13 @@ class MatakuliahController extends Controller
 
         try {
             $mataKuliah->update($request->all());
+
             return redirect()->route('matakuliah.index')
-                           ->with('success', 'Data mata kuliah berhasil diperbarui');
+                ->with('success', 'Data mata kuliah berhasil diperbarui');
         } catch (\Exception $e) {
             return redirect()->back()
-                           ->with('error', 'Terjadi kesalahan saat memperbarui data')
-                           ->withInput();
+                ->with('error', 'Terjadi kesalahan saat memperbarui data')
+                ->withInput();
         }
     }
 
@@ -107,6 +109,7 @@ class MatakuliahController extends Controller
     {
         $matakuliah = Matakuliah::findOrFail($id);
         $matakuliah->delete();
+
         return redirect()->route('matakuliah.index')->with('success', 'Matakuliah berhasil dihapus.');
     }
 
@@ -129,9 +132,9 @@ class MatakuliahController extends Controller
         }
 
         $latestCourse = Matakuliah::where('prodi_id', $prodi_id)
-                                  ->where('kode_mk', 'like', $prefix . '%')
-                                  ->orderBy('kode_mk', 'desc')
-                                  ->first();
+            ->where('kode_mk', 'like', $prefix.'%')
+            ->orderBy('kode_mk', 'desc')
+            ->first();
 
         $nextNumber = 1;
         if ($latestCourse) {
@@ -139,7 +142,7 @@ class MatakuliahController extends Controller
             $nextNumber = $lastNumber + 1;
         }
 
-        $newCode = $prefix . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        $newCode = $prefix.str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
         return response()->json($newCode);
     }
