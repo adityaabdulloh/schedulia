@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('pengampu', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('dosen_id')->constrained('dosen')->onDelete('cascade');
-            $table->foreignId('matakuliah_id')->constrained('matakuliah')->onDelete('cascade');
-            $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
+            $table->unsignedBigInteger('dosen_id');
+            $table->foreign('dosen_id')->references('id')->on('dosen')->onDelete('cascade');
+            $table->unsignedBigInteger('matakuliah_id');
+            $table->foreign('matakuliah_id')->references('id')->on('matakuliah')->onDelete('cascade');
+            $table->unsignedBigInteger('kelas_id');
+            $table->foreign('kelas_id')->references('id')->on('kelas')->onDelete('cascade');
             $table->string('tahun_akademik');
             $table->timestamps();
         });

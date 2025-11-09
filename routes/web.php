@@ -12,7 +12,7 @@ use App\Http\Controllers\JamController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MahasiswaController;
-use App\Http\Controllers\MataKuliahController;
+use App\Http\Controllers\MatakuliahController;
 use App\Http\Controllers\PengambilanMKController;
 use App\Http\Controllers\PengampuController;
 use App\Http\Controllers\PengumumanController;
@@ -77,8 +77,8 @@ Route::get('krs/export-pdf', [PengambilanMKController::class, 'exportKRS_PDF'])-
 // Contoh route utama (landing page)
 
 // Resource routes
-Route::resource('matakuliah', MataKuliahController::class);
-Route::get('/get-next-course-code/{prodi_id}', [MataKuliahController::class, 'getNextCourseCode'])->name('matakuliah.getNextCode');
+Route::resource('matakuliah', MatakuliahController::class);
+Route::get('/get-next-course-code/{prodi_id}', [MatakuliahController::class, 'getNextCourseCode'])->name('matakuliah.getNextCode');
 Route::resource('dosen', DosenController::class);
 Route::resource('prodi', ProdiController::class);
 Route::resource('ruang', RuangController::class);

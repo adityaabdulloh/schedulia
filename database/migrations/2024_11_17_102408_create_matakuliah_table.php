@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('nama');
             $table->integer('sks');
             $table->integer('semester');
-            $table->foreignId('prodi_id')->constrained('prodi');
+            $table->unsignedBigInteger('prodi_id');
+            $table->foreign('prodi_id')->references('id')->on('prodi');
             $table->timestamps();
         });
     }

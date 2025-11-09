@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('jadwal_kuliah', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pengampu_id')->constrained('pengampu')->onDelete('cascade');
-            $table->foreignId('ruang_id')->constrained('ruang')->onDelete('cascade');
-            $table->foreignId('hari_id')->constrained('hari')->onDelete('cascade');
-            $table->foreignId('jam_id')->constrained('jam')->onDelete('cascade');
+            $table->unsignedBigInteger('pengampu_id');
+            $table->foreign('pengampu_id')->references('id')->on('pengampu')->onDelete('cascade');
+            $table->unsignedBigInteger('ruang_id');
+            $table->foreign('ruang_id')->references('id')->on('ruang')->onDelete('cascade');
+            $table->unsignedBigInteger('hari_id');
+            $table->foreign('hari_id')->references('id')->on('hari')->onDelete('cascade');
+            $table->unsignedBigInteger('jam_id');
+            $table->foreign('jam_id')->references('id')->on('jam')->onDelete('cascade');
             $table->string('tahun_akademik');
             $table->timestamps();
         });

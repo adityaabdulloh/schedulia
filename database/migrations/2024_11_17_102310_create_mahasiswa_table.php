@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nim')->unique();
             $table->string('nama');
-            $table->foreignId('prodi_id')->constrained('prodi')->onDelete('cascade');
+            $table->unsignedBigInteger('prodi_id');
+            $table->foreign('prodi_id')->references('id')->on('prodi')->onDelete('cascade');
             $table->timestamps();
         });
     }
