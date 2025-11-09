@@ -13,7 +13,7 @@ class MatakuliahController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $mataKuliah = Matakuliah::where(DB::raw('LOWER(nama)'), 'like', '%' . strtolower($search) . '%')->paginate(10);
+        $mataKuliah = Matakuliah::with('prodi')->where(DB::raw('LOWER(nama)'), 'like', '%' . strtolower($search) . '%')->paginate(10);
 
         return view('matakuliah.index', compact('mataKuliah'));
     }
