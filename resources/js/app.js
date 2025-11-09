@@ -1,5 +1,4 @@
 import './bootstrap';
-import '../../appwrite-init';
 import 'bootstrap/scss/bootstrap.scss';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import * as bootstrap from 'bootstrap';
