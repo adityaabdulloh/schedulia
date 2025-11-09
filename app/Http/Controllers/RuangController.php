@@ -36,7 +36,7 @@ class RuangController extends Controller
     {
         $request->validate([
             'nama_ruang' => 'required|string|max:255',
-            'kapasitas' => 'required|integer',
+            'kapasitas' => 'required|integer|max:50',
         ]);
 
         Ruang::create($request->all());
@@ -55,7 +55,7 @@ class RuangController extends Controller
     {
         $request->validate([
             'nama_ruang' => 'required|string|max:255',
-            'kapasitas' => 'required|integer',
+            'kapasitas' => 'required|integer|max:50',
         ]);
 
         $ruang->update($request->all());

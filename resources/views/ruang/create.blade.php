@@ -44,17 +44,11 @@
                             @enderror
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="mb-3">
                             <label for="kapasitas" class="form-label">Kapasitas Ruangan</label>
-                            <select class="form-select @error('kapasitas') is-invalid @enderror"
-                                    id="kapasitas" name="kapasitas">
-                                <option value="">Pilih kapasitas</option>
-                                @for($i = 1; $i <= 150; $i++)
-                                    <option value="{{ $i }}" {{ old('kapasitas') == $i ? 'selected' : '' }}>
-                                        Kapasitas Ruangan {{ $i }}
-                                    </option>
-                                @endfor
-                            </select>
+                            <input type="number" class="form-control @error('kapasitas') is-invalid @enderror"
+                                   id="kapasitas" name="kapasitas" value="{{ old('kapasitas') }}"
+                                   placeholder="Masukkan kapasitas ruangan" max="50">
                             @error('kapasitas')
                                 <div class="invalid-feedback">
                                     {{ $message }}
