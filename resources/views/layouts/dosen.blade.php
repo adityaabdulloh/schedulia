@@ -127,7 +127,7 @@
     <!-- Header -->
     <div class="header d-flex justify-content-between align-items-center">
         <div class="logo-section">
-            <img src="{{ asset('images/Schedulia-Logo.png') }}" alt="Logo" style="height: 50px;">
+            <img src="{{ asset('images/SCHEDULIA-Logo.png') }}" alt="Logo" style="height: 50px;">
             <span>SCHEDULIA</span>
         </div>
         @auth

@@ -1,6 +1,6 @@
 <div class="sidebar">
     <div class="sidebar-header">
-        <img src="{{ asset('images/Schedulia-Logo.png') }}" alt="Logo">
+        <img src="{{ asset('images/SCHEDULIA-Logo.png') }}" alt="Logo">
         <span class="sidebar-link-text">SCHEDULIA</span>
     </div>
     <a href="{{ route('dashboard.admin') }}" class="sidebar-link {{ request()->is('dashboard/admin') ? 'active' : '' }}" data-bs-toggle="tooltip" title="Dashboard">
