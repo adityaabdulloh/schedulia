@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const pengumuman = e.pengumuman;
 
-                // Show a toast notification
+                // Show a toast notificatio
                 Swal.fire({
                     toast: true,
                     position: 'top-end',
