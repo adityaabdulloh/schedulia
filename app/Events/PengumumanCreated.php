@@ -37,6 +37,11 @@ class PengumumanCreated implements ShouldBroadcast
         ];
     }
 
+    public function broadcastAs()
+    {
+        return 'pengumuman.created';
+    }
+
     public function broadcastWith(): array
 {
     return [
