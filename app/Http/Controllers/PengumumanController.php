@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PengumumanCreated;
 use App\Models\JadwalKuliah;
 use App\Models\Pengumuman;
 use Illuminate\Http\Request;
@@ -38,12 +39,15 @@ class PengumumanController extends Controller
             return redirect()->back()->with('error', 'Hanya dosen yang bisa membuat pengumuman.');
         }
 
-        Pengumuman::create([
+        $pengumuman = Pengumuman::create([
             'jadwal_kuliah_id' => $request->jadwal_kuliah_id,
             'dosen_id' => $dosen->id,
             'tipe' => $request->tipe,
             'pesan' => $request->pesan,
         ]);
+
+        // Broadcast the event
+        broadcast(new PengumumanCreated($pengumuman))->toOthers();
 
         return redirect()->route('dosen.dashboard')->with('success', 'Pengumuman berhasil dikirim!');
     }

@@ -382,3 +382,101 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Existing scripts...
+    function updateClock() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('digital-clock').textContent = `${hours}:${minutes}:${seconds}`;
+
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('digital-date').textContent = now.toLocaleDateS
+ring('id-ID', options);
+    }
+
+    function updateScheduleHighlight() {
+        const now = new Date();
+        const currentTimeMinutes = now.getHours() * 60 + now.getMinutes();
+
+        document.querySelectorAll('.jadwal-item').forEach(item => {
+            const startTimeStr = item.dataset.start;
+            const endTimeStr = item.dataset.end;
+
+            if (startTimeStr && endTimeStr) {
+                const startMinutes = parseInt(startTimeStr.split(':')[0]) * 60 + parseInt(startTimeStr.split(':')[1]);
+                const endMinutes = parseInt(endTimeStr.split(':')[0]) * 60 + parseInt(endTimeStr.split(':')[1]);
+
+                if (currentTimeMinutes >= startMinutes && currentTimeMinutes < endMinutes) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            }
+        });
+    }
+
+    updateClock();
+    updateScheduleHighlight();
+    setInterval(updateClock, 1000);
+    setInterval(updateScheduleHighlight, 60000);
+
+    // Listen for new announcements
+    const kelasId = {{ $mahasiswa->kelas_id }};
+    window.Echo.private(`kelas.${kelasId}`)
+        .listen('PengumumanCreated', (e) => {
+            console.log(e); // For debugging
+            const pengumuman = e.pengumuman;
+
+            // Show a toast notification
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'info',
+                title: `Pengumuman Baru: ${pengumuman.matakuliah}`,
+                text: pengumuman.pesan,
+                showConfirmButton: false,
+                timer: 5000,
+                timerProgressBar: true
+            });
+
+            // Create the new announcement element
+            const newAnnouncement = document.createElement('div');
+            let alertClass = 'alert-info';
+            if (pengumuman.tipe === 'perubahan') {
+                alertClass = 'alert-warning';
+            } else if (pengumuman.tipe === 'pembatalan') {
+                alertClass = 'alert-danger';
+            }
+            newAnnouncement.className = `alert ${alertClass}`;
+            newAnnouncement.setAttribute('role', 'alert');
+
+            newAnnouncement.innerHTML = `
+                <h5 class="alert-heading">
+                    ${pengumuman.matakuliah}
+                    <span class="badge badge-secondary">${pengumuman.tipe.charAt(0).toUpperCase() + pengumuman.tipe.slice(1)}</span>
+                </h5>
+                <p>${pengumuman.pesan}</p>
+                <hr>
+                <p class="mb-0 text-right">
+                    <small>
+                        Oleh: ${pengumuman.dosen} | Baru saja
+                    </small>
+                </p>
+            `;
+
+            // Prepend to the list
+            const pengumumanList = document.querySelector('.pengumuman-list');
+            const noAnnouncement = pengumumanList.querySelector('p.text-muted');
+            if (noAnnouncement) {
+                noAnnouncement.remove();
+            }
+            pengumumanList.prepend(newAnnouncement);
+        });
+});
+</script>
+@endpush

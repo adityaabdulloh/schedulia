@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -15,4 +16,12 @@ use Illuminate\Support\Facades\Broadcast;
 
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
+});
+
+Broadcast::channel('kelas.{kelasId}', function (User $user, int $kelasId) {
+    // Check if the user is a student and belongs to the specified class
+    if ($user->role === 'mahasiswa' && $user->mahasiswa->kelas_id === $kelasId) {
+        return true;
+    }
+    return false;
 });
