@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\PusherTestEvent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PusherController extends Controller
 {
@@ -20,10 +21,15 @@ class PusherController extends Controller
      */
     public function sendMessage(Request $request)
     {
-        $request->validate(['message' => 'required|string|max:255']);
+        try {
+            $request->validate(['message' => 'required|string|max:255']);
 
-        broadcast(new PusherTestEvent($request->message));
+            broadcast(new PusherTestEvent($request->message));
 
-        return response()->json(['status' => 'Message Sent!']);
+            return response()->json(['status' => 'Message Sent!']);
+        } catch (\Exception $e) {
+            Log::error('Pusher sendMessage error: ' . $e->getMessage());
+            return response()->json(['status' => 'Error sending message', 'error' => $e->getMessage()], 500);
+        }
     }
 }
