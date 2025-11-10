@@ -53,4 +53,64 @@ document.addEventListener('DOMContentLoaded', function () {
             logoutModal.show();
         });
     }
+
+    // Listen for new announcements
+    if (typeof KELAS_ID !== 'undefined' && KELAS_ID) {
+        window.Echo.private(`kelas.${KELAS_ID}`)
+            .listen('pengumuman.created', (e) => {
+                console.log('Event received:', e); // For debugging
+
+                const pengumuman = e.pengumuman;
+
+                // Show a toast notification
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'info',
+                    title: `Pengumuman Baru: ${pengumuman.matakuliah}`,
+                    html: `<strong>Tipe:</strong> ${pengumuman.tipe.charAt(0).toUpperCase() + pengumuman.tipe.slice(1)}<br>
+                           <strong>Pesan:</strong> ${pengumuman.pesan}<br>
+                           <strong>Oleh:</strong> ${pengumuman.dosen}<br>
+                           <small>${pengumuman.created_at}</small>`,
+                    showConfirmButton: false,
+                    timer: 7000, // Increased timer for more info
+                    timerProgressBar: true
+                });
+
+                // Create the new announcement element
+                const newAnnouncement = document.createElement('div');
+                let alertClass = 'alert-info';
+                if (pengumuman.tipe === 'perubahan') {
+                    alertClass = 'alert-warning';
+                } else if (pengumuman.tipe === 'pembatalan') {
+                    alertClass = 'alert-danger';
+                }
+                newAnnouncement.className = `alert ${alertClass}`;
+                newAnnouncement.setAttribute('role', 'alert');
+
+                newAnnouncement.innerHTML = `
+                    <h5 class="alert-heading">
+                        ${pengumuman.matakuliah}
+                        <span class="badge badge-secondary">${pengumuman.tipe.charAt(0).toUpperCase() + pengumuman.tipe.slice(1)}</span>
+                    </h5>
+                    <p>${pengumuman.pesan}</p>
+                    <hr>
+                    <p class="mb-0 text-right">
+                        <small>
+                            Oleh: ${pengumuman.dosen} | Baru saja
+                        </small>
+                    </p>
+                `;
+
+                // Prepend to the list
+                const pengumumanList = document.getElementById('announcement-list');
+                if (pengumumanList) {
+                    const noAnnouncement = document.getElementById('no-announcement-message');
+                    if (noAnnouncement) {
+                        noAnnouncement.remove();
+                    }
+                    pengumumanList.prepend(newAnnouncement);
+                }
+            });
+    }
 });

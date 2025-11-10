@@ -283,7 +283,7 @@
                 <div class="widget-header">
                     <h2 class="widget-title"><i class="fas fa-bullhorn mr-2"></i>Pengumuman Terbaru</h2>
                 </div>
-                <div class="pengumuman-list">
+                <div id="announcement-list" class="pengumuman-list">
                     @if(isset($pengumuman) && $pengumuman->count() > 0)
                         @foreach($pengumuman as $item)
                             @php
@@ -309,7 +309,7 @@
                             </div>
                         @endforeach
                     @else
-                        <p class="text-muted">Tidak ada pengumuman penting untuk saat ini.</p>
+                        <p class="text-muted" id="no-announcement-message">Tidak ada pengumuman penting untuk saat ini.</p>
                     @endif
                 </div>
             </div>
@@ -344,6 +344,10 @@
 @endsection
 
 @push('scripts')
+<script>
+    // Pass kelas_id to JavaScript
+    const KELAS_ID = {{ $mahasiswa->kelas_id ?? 'null' }};
+</script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Existing scripts...
@@ -394,9 +398,8 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(updateScheduleHighlight, 60000);
 
     // Listen for new announcements
-    const kelasId = {{ $mahasiswa->kelas_id ? (int) $mahasiswa->kelas_id : 'null' }};
-    if (kelasId) {
-        window.Echo.private(`kelas.${kelasId}`)
+    if (KELAS_ID) {
+        window.Echo.private(`kelas.${KELAS_ID}`)
             .listen('pengumuman.created', (e) => {
                 console.log('Event received:', e); // For debugging
 
@@ -408,9 +411,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     position: 'top-end',
                     icon: 'info',
                     title: `Pengumuman Baru: ${pengumuman.matakuliah}`,
-                    text: pengumuman.pesan,
+                    html: `<strong>Tipe:</strong> ${pengumuman.tipe.charAt(0).toUpperCase() + pengumuman.tipe.slice(1)}<br>
+                           <strong>Pesan:</strong> ${pengumuman.pesan}<br>
+                           <strong>Oleh:</strong> ${pengumuman.dosen}<br>
+                           <small>${pengumuman.created_at}</small>`,
                     showConfirmButton: false,
-                    timer: 5000,
+                    timer: 7000, // Increased timer for more info
                     timerProgressBar: true
                 });
 
@@ -440,9 +446,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
 
                 // Prepend to the list
-                const pengumumanList = document.querySelector('.pengumuman-list');
+                const pengumumanList = document.getElementById('announcement-list');
                 if (pengumumanList) {
-                    const noAnnouncement = pengumumanList.querySelector('p.text-muted');
+                    const noAnnouncement = document.getElementById('no-announcement-message');
                     if (noAnnouncement) {
                         noAnnouncement.remove();
                     }
