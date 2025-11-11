@@ -54,7 +54,19 @@ class DosenFeatureController extends Controller
 
     public function pengambilanMk()
     {
-        return view('dosen.pengambilan-mk');
+        $user = Auth::user();
+        $dosen = Dosen::where('email', $user->email)->firstOrFail();
+
+        // Dapatkan semua ID mata kuliah yang diampu oleh dosen
+        $matakuliahIds = Pengampu::where('dosen_id', $dosen->id)->pluck('matakuliah_id')->unique();
+
+        // Dapatkan data pengambilan MK oleh mahasiswa untuk mata kuliah yang diampu dosen
+        $pengambilanMk = PengambilanMK::whereIn('matakuliah_id', $matakuliahIds)
+            ->where('status', 'approved')
+            ->with(['mahasiswa.prodi', 'matakuliah.prodi', 'mahasiswa.kelas'])
+            ->get();
+
+        return view('dosen.pengambilan-mk', compact('pengambilanMk', 'dosen'));
     }
 
     public function absensi()

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AbsensiDosenController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -63,7 +64,11 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
     Route::get('pengumuman/create/{jadwalKuliah}', [PengumumanController::class, 'create'])->name('pengumuman.create');
     Route::post('pengumuman', [PengumumanController::class, 'store'])->name('pengumuman.store');
     Route::get('dosen/pengambilan-mk', [DosenFeatureController::class, 'pengambilanMk'])->name('dosen.pengambilan-mk.index');
-    Route::get('dosen/absensi', [DosenFeatureController::class, 'absensi'])->name('dosen.absensi.index');
+    
+    // Routes for Absensi
+    Route::get('dosen/absensi', [AbsensiDosenController::class, 'index'])->name('dosen.absensi.index');
+    Route::get('dosen/absensi/{pengampu}', [AbsensiDosenController::class, 'show'])->name('dosen.absensi.show');
+    Route::post('dosen/absensi/{pengampu}', [AbsensiDosenController::class, 'store'])->name('dosen.absensi.store');
 });
 
 //     // Route untuk pengambilan MK oleh mahasiswa

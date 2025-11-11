@@ -40,4 +40,9 @@ class Dosen extends Model
     {
         return $this->hasMany(Pengampu::class, 'dosen_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

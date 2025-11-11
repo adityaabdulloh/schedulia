@@ -16,24 +16,7 @@
         <i class="bi bi-book-fill"></i> <span class="sidebar-link-text">Mata Kuliah Diampu</span>
     </a>
 
-    <a href="{{ route('dosen.mahasiswa.index') }}" data-bs-toggle="collapse" data-bs-target="#submenu-mahasiswa" class="sidebar-link" aria-expanded="false">
+    <a href="{{ route('dosen.mahasiswa.index') }}" class="sidebar-link {{ request()->is('dosen/mahasiswa*') ? 'active' : '' }}">
         <i class="bi bi-people-fill"></i> <span class="sidebar-link-text">Manajemen Mahasiswa</span>
     </a>
-    <ul class="collapse list-unstyled" id="submenu-mahasiswa">
-        <li>
-            <a href="{{ route('dosen.mahasiswa.index') }}" class="submenu-link">
-                <i class="bi bi-person-lines-fill"></i> <span class="sidebar-link-text">Daftar Mahasiswa</span>
-            </a>
-        </li>
-        <li>
-            <a href="{{ url('/dosen/pengambilan-mk') }}" class="submenu-link">
-                <i class="bi bi-person-check-fill"></i> <span class="sidebar-link-text">Mahasiswa Mengambil MK</span>
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('dosen.absensi.index') }}" class="submenu-link">
-                <i class="bi bi-card-checklist"></i> <span class="sidebar-link-text">Absensi</span>
-            </a>
-        </li>
-    </ul>
 </div>
