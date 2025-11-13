@@ -13,7 +13,6 @@ class Jam extends Model
         'jam_mulai',
         'jam_selesai',
         'durasi',
-        'waktu_shalat',
     ];
 
     // Hapus relasi dengan matakuliah
@@ -59,7 +58,6 @@ class Jam extends Model
 
         // Ambil slot jam yang sesuai dengan durasi SKS
         return self::where('durasi', '>=', $durasi_sks)
-            ->where('waktu_shalat', false)
             ->get();
     }
 }

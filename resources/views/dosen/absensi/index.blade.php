@@ -21,29 +21,24 @@
                             Anda tidak mengampu mata kuliah apapun saat ini.
                         </div>
                     @else
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Mata Kuliah</th>
-                                        <th>Prodi</th>
-                                        <th>Kelas</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($pengampu as $p)
-                                        <tr>
-                                            <td>{{ $p->matakuliah->nama_matakuliah }}</td>
-                                            <td>{{ $p->prodi->nama_prodi }}</td>
-                                            <td>{{ $p->kelas->nama_kelas }}</td>
-                                            <td>
-                                                <a href="{{ route('dosen.absensi.show', $p->id) }}" class="btn btn-primary">Pilih</a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                        <div class="row">
+                            @foreach($pengampu as $p)
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $p->matakuliah->nama }}</h5>
+                                            <p class="card-text">
+                                                <strong>Kode:</strong> {{ $p->matakuliah->kode_mk }} <br>
+                                                <strong>Prodi:</strong> {{ $p->prodi->nama_prodi }} <br>
+                                                <strong>Kelas:</strong> {{ $p->kelas->nama_kelas }}
+                                            </p>
+                                        </div>
+                                        <div class="card-footer bg-transparent border-top-0">
+                                            <a href="{{ route('dosen.absensi.show', $p->id) }}" class="btn btn-primary w-100">Pilih Mata Kuliah</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     @endif
                 </div>

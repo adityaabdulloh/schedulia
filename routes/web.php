@@ -75,7 +75,7 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
 Route::get('krs', [PengambilanMKController::class, 'indexForStudent'])->name('krs.index');
 Route::get('pengambilan-mk', [PengambilanMKController::class, 'createForStudent'])->name('pengambilan-mk.create');
 Route::post('pengambilan-mk', [PengambilanMKController::class, 'storeForStudent'])->name('pengambilan-mk.store');
-Route::delete('pengambilan-mk/{matakuliah_id}', [PengambilanMKController::class, 'destroyForStudent'])->name('pengambilan-mk.destroy');
+Route::delete('pengambilan-mk/{pengampu_id}', [PengambilanMKController::class, 'destroyForStudent'])->name('pengambilan-mk.destroy');
 Route::get('krs/export-pdf', [PengambilanMKController::class, 'exportKRS_PDF'])->name('krs.export-pdf');
 // });
 

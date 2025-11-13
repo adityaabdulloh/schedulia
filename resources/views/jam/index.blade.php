@@ -23,7 +23,6 @@
                 <th class="fw-bold" style="color: black; background-color: #d9edfc;">Jam Mulai</th>
                 <th class="fw-bold" style="color: black; background-color: #d9edfc;">Jam Selesai</th>
                 <th class="fw-bold" style="color: black; background-color: #d9edfc;">Durasi (menit)</th>
-                <th class="fw-bold" style="color: black; background-color: #d9edfc;">Waktu Shalat</th>
                 <th class="fw-bold" style="color: black; background-color: #d9edfc;">Aksi</th>
 
             </tr>
@@ -35,7 +34,6 @@
                     <td>{{ $jam->jam_mulai }}</td>
                     <td>{{ $jam->jam_selesai }}</td>
                     <td>{{ $jam->durasi }}</td>
-                    <td>{{ $jam->waktu_shalat ? 'Ya' : 'Tidak' }}</td>
                     <td>
                         <a href="{{ route('jam.edit', $jam->id) }}" class="btn btn-warning btn-sm"> <i class="fas fa-edit"></i> Edit</a>
                         <form action="{{ route('jam.destroy', $jam->id) }}" method="POST" style="display:inline;" id="delete-form-{{ $jam->id }}">
@@ -47,7 +45,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" class="text-center">Tidak ada data jam tersedia</td>
+                    <td colspan="5" class="text-center">Tidak ada data jam tersedia</td>
                 </tr>
             @endforelse
         </tbody>

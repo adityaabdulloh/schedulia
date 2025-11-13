@@ -87,6 +87,8 @@ document.addEventListener('DOMContentLoaded', function () {
             logoutModal.show();
         });
     }
+<<<<<<< HEAD
+=======
 
     // Listen for new announcements
     if (typeof KELAS_ID !== 'undefined' && KELAS_ID) {
@@ -147,4 +149,5 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
     }
+>>>>>>> 39fbc1e613ea5c0a7f07e7a85ba9b79c9eadb915
 });

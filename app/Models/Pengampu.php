@@ -39,4 +39,10 @@ class Pengampu extends Model
     {
         return $this->belongsTo(Prodi::class);
     }
+
+    public function mahasiswa()
+    {
+        return $this->belongsToMany(Mahasiswa::class, 'pengambilan_mk', 'pengampu_id', 'mahasiswa_id')
+            ->wherePivot('status', 'approved');
+    }
 }
