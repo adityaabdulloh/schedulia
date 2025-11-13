@@ -39,7 +39,7 @@ class Dosen extends Model
 
     public function pengampus()
     {
-        return $this->hasMany(Pengampu::class, 'dosen_id');
+        return $this->belongsToMany(Pengampu::class, 'pengampu_dosen', 'dosen_id', 'pengampu_id');
     }
 
     public function user()

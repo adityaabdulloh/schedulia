@@ -8,7 +8,7 @@ class Pengampu extends Model
 {
     protected $table = 'pengampu';
 
-    protected $fillable = ['dosen_id', 'matakuliah_id', 'kelas_id', 'tahun_akademik', 'prodi_id'];
+    protected $fillable = ['matakuliah_id', 'kelas_id', 'tahun_akademik', 'prodi_id'];
 
     public function dosen()
     {

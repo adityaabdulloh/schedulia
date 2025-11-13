@@ -25,7 +25,7 @@ class AbsensiDosenController extends Controller
             return redirect()->back()->with('error', 'Anda tidak terdaftar sebagai dosen.');
         }
 
-        $pengampu = Pengampu::where('dosen_id', $dosen->id)
+        $pengampu = $dosen->pengampus()
             ->with(['matakuliah', 'kelas', 'prodi'])
             ->get();
 

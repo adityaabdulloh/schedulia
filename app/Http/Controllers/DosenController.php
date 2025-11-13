@@ -216,15 +216,14 @@ class DosenController extends Controller
             if ($request->hasFile('foto_profil')) {
                 // Delete old profile photo if exists
                 if ($dosen->foto_profil) {
-                    Storage::delete('public/foto_profil/'.$dosen->foto_profil);
+                    Storage::delete('public/'.$dosen->foto_profil);
                 }
-                $fileName = time().'.'.$request->foto_profil->extension();
-                $request->foto_profil->storeAs('public/foto_profil', $fileName);
-                $data['foto_profil'] = $fileName;
+                $path = $request->file('foto_profil')->store('public/foto_profil');
+                $data['foto_profil'] = str_replace('public/', '', $path);
             } elseif ($request->has('remove_foto_profil') && $request->input('remove_foto_profil') == 1) {
                 // Remove existing profile photo
                 if ($dosen->foto_profil) {
-                    Storage::delete('public/foto_profil/'.$dosen->foto_profil);
+                    Storage::delete('public/'.$dosen->foto_profil);
                 }
                 $data['foto_profil'] = null;
             }

@@ -27,12 +27,9 @@ class PengampuController extends Controller
                 }
                 $dosenId = $user->dosen->id;
 
-                $query->where(function ($q) use ($dosenId) {
-                    $q->where('dosen_id', $dosenId) // Check primary lecturer
-                        ->orWhereHas('dosen', function ($q2) use ($dosenId) { // Check additional lecturers via pivot table
+                $query->whereHas('dosen', function ($q2) use ($dosenId) { // Check additional lecturers via pivot table
                             $q2->where('dosen.id', $dosenId);
                         });
-                });
             }
             // If the user is 'admin', no additional filtering is needed based on user ID.
             // The query will proceed to apply search filters if any.
@@ -93,9 +90,7 @@ class PengampuController extends Controller
         ]);
 
         DB::transaction(function () use ($request) {
-            // Buat pengampu baru
             $pengampu = Pengampu::create([
-                'dosen_id' => $request->dosen1,
                 'matakuliah_id' => $request->matakuliah_id,
                 'kelas_id' => $request->kelas_id,
                 'tahun_akademik' => $request->tahun_akademik,
@@ -144,9 +139,7 @@ class PengampuController extends Controller
         ]);
 
         DB::transaction(function () use ($request, $pengampu) {
-            // Update data pengampu
             $pengampu->update([
-                'dosen_id' => $request->dosen1,
                 'matakuliah_id' => $request->matakuliah_id,
                 'kelas_id' => $request->kelas_id,
                 'tahun_akademik' => $request->tahun_akademik,

@@ -61,7 +61,7 @@
         <div class="col-lg-4">
             <!-- Widget Profil -->
             <div class="widget-card profile-widget secondary-border">
-                <img src="{{ $dosen->foto_profil ? asset('storage/foto_profil/' . $dosen->foto_profil) : asset('images/default-profil.svg') }}" alt="Foto Profil" class="profile-img">
+                <img src="{{ $dosen->foto_profil ? Storage::url($dosen->foto_profil) : asset('images/default-profil.svg') }}" alt="Foto Profil" class="profile-img">
                 <div class="profile-info">
                     <h3 class="profile-name">{{ Auth::user()->name }}</h3>
                     <p class="mb-0 text-muted">{{ $dosen->nip }}</p>

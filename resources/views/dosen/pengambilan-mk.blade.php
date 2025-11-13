@@ -21,8 +21,9 @@
                                 <thead class="thead-light">
                                     <tr>
                                         <th>No.</th>
+                                        <th>Foto Profil</th>
                                         <th>Nama Mahasiswa</th>
-                                        <th>NPM</th>
+                                        <th>NIM</th>
                                         <th>Program Studi</th>
                                         <th>Mata Kuliah</th>
                                         <th>SKS</th>
@@ -34,8 +35,11 @@
                                     @foreach($pengambilanMk as $index => $pengambilan)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
+                                            <td>
+                                                <img src="{{ $pengambilan->mahasiswa->foto_profil ? asset('storage/foto_profil/' . $pengambilan->mahasiswa->foto_profil) : asset('images/default-profil.svg') }}" alt="Foto Profil" class="img-fluid rounded-circle" style="width: 50px; height: 50px;">
+                                            </td>
                                             <td>{{ $pengambilan->mahasiswa->nama }}</td>
-                                            <td>{{ $pengambilan->mahasiswa->npm }}</td>
+                                            <td>{{ $pengambilan->mahasiswa->nim }}</td>
                                             <td>{{ $pengambilan->mahasiswa->prodi->nama_prodi }}</td>
                                             <td>{{ $pengambilan->matakuliah->nama }}</td>
                                             <td>{{ $pengambilan->matakuliah->sks }}</td>

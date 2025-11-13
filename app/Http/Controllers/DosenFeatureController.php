@@ -15,10 +15,8 @@ class DosenFeatureController extends Controller
         $user = Auth::user();
         $dosen = Dosen::where('email', $user->email)->firstOrFail();
 
-        // Get all unique matakuliah_id that this dosen teaches
-        $matakuliahIdsTaughtByDosen = Pengampu::where('dosen_id', $dosen->id)
-            ->pluck('matakuliah_id')
-            ->unique();
+        $pengampuRecords = $dosen->pengampus()->with('matakuliah', 'kelas')->get();
+        $matakuliahIdsTaughtByDosen = $pengampuRecords->pluck('matakuliah_id')->unique();
 
         // Get unique mahasiswa_id from PengambilanMK where status is 'approved'
         // and matakuliah_id is one of the courses taught by this dosen
@@ -33,9 +31,7 @@ class DosenFeatureController extends Controller
             ->orderBy('nama')
             ->get();
 
-        // The $pengampuRecords variable is used in the view, so we should keep it.
-        // It provides context about what the dosen teaches.
-        $pengampuRecords = Pengampu::where('dosen_id', $dosen->id)->with('matakuliah', 'kelas')->get();
+        
 
         return view('dosen.mahasiswa.index', compact('mahasiswa', 'pengampuRecords'));
     }
@@ -58,7 +54,7 @@ class DosenFeatureController extends Controller
         $dosen = Dosen::where('email', $user->email)->firstOrFail();
 
         // Dapatkan semua ID mata kuliah yang diampu oleh dosen
-        $matakuliahIds = Pengampu::where('dosen_id', $dosen->id)->pluck('matakuliah_id')->unique();
+        $matakuliahIds = $dosen->pengampus()->pluck('matakuliah_id')->unique();
 
         // Dapatkan data pengambilan MK oleh mahasiswa untuk mata kuliah yang diampu dosen
         $pengambilanMk = PengambilanMK::whereIn('matakuliah_id', $matakuliahIds)
