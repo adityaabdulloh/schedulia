@@ -79,7 +79,7 @@ body.sidebar-collapsed .header {
     top: 0;
     bottom: 0;
     left: 0;
-    z-index: 1020;
+    z-index: 1040;
     transition: all 0.3s ease;
     overflow-y: auto;
     overflow-x: hidden;
@@ -146,7 +146,7 @@ body.sidebar-collapsed .header {
 }
 
 
-/* Collapsed Sidebar */
+/* Collapsed Sidebar for Desktop */
 body.sidebar-collapsed .sidebar {
     width: 80px;
 }
@@ -184,6 +184,70 @@ body.sidebar-collapsed .sidebar .sidebar-header span {
     background-color: var(--body-bg);
     min-height: calc(100vh - 65px);
 }
+
+/* Sidebar Backdrop for Mobile */
+.sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1035;
+    display: none;
+    transition: opacity 0.3s ease;
+}
+
+body.sidebar-mobile-open .sidebar-backdrop {
+    display: block;
+}
+
+
+/* Responsive Styles for Mobile */
+@media (max-width: 991.98px) {
+    .header {
+        left: 0;
+        padding: 10px 15px;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+        z-index: 1040;
+    }
+
+    body.sidebar-mobile-open .sidebar {
+        transform: translateX(0);
+    }
+
+    .main-wrapper {
+        margin-left: 0;
+    }
+
+    /* Disable desktop collapsed state on mobile */
+    body.sidebar-collapsed .sidebar {
+        width: 260px;
+        transform: translateX(-100%);
+    }
+    body.sidebar-collapsed .main-wrapper {
+        margin-left: 0;
+    }
+    body.sidebar-collapsed .header {
+        left: 0;
+    }
+    body.sidebar-collapsed .sidebar a {
+        justify-content: flex-start;
+    }
+    body.sidebar-collapsed .sidebar .sidebar-link-text {
+        display: inline;
+    }
+    body.sidebar-collapsed .sidebar a i {
+        margin-right: 15px;
+    }
+    body.sidebar-collapsed .sidebar .sidebar-header span {
+        display: inline;
+    }
+}
+
 
 /* Card */
 .card {

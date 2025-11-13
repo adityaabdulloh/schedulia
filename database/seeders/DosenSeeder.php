@@ -50,7 +50,7 @@ class DosenSeeder extends Seeder
 
             // Gunakan updateOrCreate untuk membuat atau memperbarui data dosen berdasarkan NIDN
             // dan menautkannya dengan user_id yang sesuai.
-            Dosen::updateOrCreate(['nip' => $dosenData['nip']], array_merge($dosenData, ['id' => $user->id]));
+            Dosen::updateOrCreate(['nip' => $dosenData['nip']], array_merge($dosenData, ['user_id' => $user->id]));
         }
     }
 }

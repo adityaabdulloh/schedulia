@@ -21,18 +21,12 @@
     <a href="{{ url('/kelas') }}" class="sidebar-link {{ request()->is('kelas*') ? 'active' : '' }}">
         <i class="bi bi-person-lines-fill"></i> <span class="sidebar-link-text">Kelas</span>
     </a>
-    <a href="{{ url('/mahasiswa') }}" class="sidebar-link {{ request()->is('mahasiswa*') || request()->is('pengambilan-mk*') || request()->is('absensi*') ? 'active' : '' }}" data-bs-toggle="collapse" data-bs-target="#manajemen-mahasiswa-submenu" role="button" aria-expanded="false" aria-controls="manajemen-mahasiswa-submenu">
+    <a href="{{ url('/mahasiswa') }}" class="sidebar-link {{ request()->is('mahasiswa*') ? 'active' : '' }}" data-bs-toggle="collapse" data-bs-target="#manajemen-mahasiswa-submenu" role="button" aria-expanded="false" aria-controls="manajemen-mahasiswa-submenu">
         <i class="bi bi-person-vcard"></i> <span class="sidebar-link-text">Mahasiswa</span>
     </a>
     <div class="collapse" id="manajemen-mahasiswa-submenu">
         <a href="{{ url('/mahasiswa') }}" class="sidebar-link submenu-link {{ request()->is('mahasiswa*') ? 'active' : '' }}">
             <i class="bi bi-dot"></i> <span class="sidebar-link-text">Data Mahasiswa</span>
-        </a>
-        <a href="{{ url('/pengambilan-mk') }}" class="sidebar-link submenu-link {{ request()->is('pengambilan-mk*') ? 'active' : '' }}">
-            <i class="bi bi-dot"></i> <span class="sidebar-link-text">Mahasiswa Mengambil MK</span>
-        </a>
-        <a href="{{ url('/absensi') }}" class="sidebar-link submenu-link {{ request()->is('absensi*') ? 'active' : '' }}">
-            <i class="bi bi-dot"></i> <span class="sidebar-link-text">Absensi</span>
         </a>
     </div>
     <a href="{{ url('/jam') }}" class="sidebar-link {{ request()->is('jam*') ? 'active' : '' }}">

@@ -17,6 +17,7 @@ class Dosen extends Model
         'email',
         'prodi_id',
         'foto_profil',
+        'user_id',
     ];
 
     protected $with = ['prodi'];
@@ -39,5 +40,10 @@ class Dosen extends Model
     public function pengampus()
     {
         return $this->hasMany(Pengampu::class, 'dosen_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

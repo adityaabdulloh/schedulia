@@ -8,12 +8,18 @@
         "php": "^8.2",
         "ext-intl": "*",
         "ext-zip": "*",
+        "ably/laravel-broadcaster": "^1.0",
         "barryvdh/laravel-dompdf": "^3.1",
         "filament/filament": "^3.2",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
+<<<<<<< HEAD
         "laravel/tinker": "^2.8"
+=======
+        "laravel/tinker": "^2.8",
+        "pusher/pusher-php-server": "^7.2"
+>>>>>>> 39fbc1e613ea5c0a7f07e7a85ba9b79c9eadb915
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -47,9 +53,6 @@
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
-        ],
-        "post-create-project-cmd": [
-            "@php artisan key:generate --ansi"
         ]
     },
     "extra": {

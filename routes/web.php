@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AbsensiDosenController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -63,14 +64,18 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
     Route::get('pengumuman/create/{jadwalKuliah}', [PengumumanController::class, 'create'])->name('pengumuman.create');
     Route::post('pengumuman', [PengumumanController::class, 'store'])->name('pengumuman.store');
     Route::get('dosen/pengambilan-mk', [DosenFeatureController::class, 'pengambilanMk'])->name('dosen.pengambilan-mk.index');
-    Route::get('dosen/absensi', [DosenFeatureController::class, 'absensi'])->name('dosen.absensi.index');
+    
+    // Routes for Absensi
+    Route::get('dosen/absensi', [AbsensiDosenController::class, 'index'])->name('dosen.absensi.index');
+    Route::get('dosen/absensi/{pengampu}', [AbsensiDosenController::class, 'show'])->name('dosen.absensi.show');
+    Route::post('dosen/absensi/{pengampu}', [AbsensiDosenController::class, 'store'])->name('dosen.absensi.store');
 });
 
 //     // Route untuk pengambilan MK oleh mahasiswa
 Route::get('krs', [PengambilanMKController::class, 'indexForStudent'])->name('krs.index');
 Route::get('pengambilan-mk', [PengambilanMKController::class, 'createForStudent'])->name('pengambilan-mk.create');
 Route::post('pengambilan-mk', [PengambilanMKController::class, 'storeForStudent'])->name('pengambilan-mk.store');
-Route::delete('pengambilan-mk/{matakuliah_id}', [PengambilanMKController::class, 'destroyForStudent'])->name('pengambilan-mk.destroy');
+Route::delete('pengambilan-mk/{pengampu_id}', [PengambilanMKController::class, 'destroyForStudent'])->name('pengambilan-mk.destroy');
 Route::get('krs/export-pdf', [PengambilanMKController::class, 'exportKRS_PDF'])->name('krs.export-pdf');
 // });
 

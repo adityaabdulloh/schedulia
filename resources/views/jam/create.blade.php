@@ -19,10 +19,6 @@
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
-        <div class="form-group">
-            <label for="waktu_shalat">Waktu Shalat</label>
-            <input type="checkbox" name="waktu_shalat" id="waktu_shalat" value="1" {{ old('waktu_shalat') ? 'checked' : '' }}>
-        </div>
         <button type="submit" class="btn btn-success">Simpan</button>
         <a href="{{ route('jam.index') }}" class="btn btn-secondary">Kembali</a>
     </form>
