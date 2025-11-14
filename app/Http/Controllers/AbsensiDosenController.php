@@ -82,7 +82,7 @@ class AbsensiDosenController extends Controller
     public function show(Pengampu $pengampu)
     {
         $pengampu->load(['matakuliah', 'kelas', 'prodi']);
-        $mahasiswa = $pengampu->mahasiswa;
+        $mahasiswa = $pengampu->mahasiswa()->select('mahasiswa.*', 'mahasiswa.foto_profil')->get();
 
         // New logic for history
         $absensiHistory = Absensi::where('pengampu_id', $pengampu->id)

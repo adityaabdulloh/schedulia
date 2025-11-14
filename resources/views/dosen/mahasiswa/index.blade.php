@@ -4,45 +4,48 @@
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Manajemen Mahasiswa</h1>
+        <h1 class="h3 mb-0 text-gray-800">Daftar Mahasiswa</h1>
     </div>
 
-    <div class="row">
-        <div class="col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Daftar Mahasiswa</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">Mahasiswa Mengambil MK</div>
-                            <p class="mt-2 text-gray-600">Lihat daftar mahasiswa yang mengambil mata kuliah yang Anda ampu.</p>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-person-check-fill fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                    <a href="{{ route('dosen.pengambilan-mk.index') }}" class="stretched-link"></a>
-                </div>
-            </div>
-        </div>
+    {{-- Navigation Buttons --}}
+    <div class="mb-4">
+        <a href="{{ route('dosen.pengambilan-mk.index') }}" class="btn btn-primary mr-2">Mahasiswa Mengambil MK</a>
+        <a href="{{ route('dosen.absensi.index') }}" class="btn btn-success">Absensi</a>
+    </div>
 
-        <div class="col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Kehadiran</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">Absensi</div>
-                            <p class="mt-2 text-gray-600">Kelola dan rekam kehadiran mahasiswa untuk setiap sesi perkuliahan.</p>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-card-checklist fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                    <a href="{{ route('dosen.absensi.index') }}" class="stretched-link"></a>
-                </div>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Data Mahasiswa</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>NIM</th>
+                            <th>Program Studi</th>
+                            <th>Kelas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($mahasiswa as $mhs)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $mhs->nama }}</td>
+                            <td>{{ $mhs->nim }}</td>
+                            <td>{{ $mhs->prodi->nama_prodi ?? 'N/A' }}</td>
+                            <td>{{ $mhs->kelas->nama_kelas ?? 'N/A' }}</td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="5" class="text-center">Tidak ada data mahasiswa.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

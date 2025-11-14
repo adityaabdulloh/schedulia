@@ -4,6 +4,11 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import * as bootstrap from 'bootstrap';
 import Swal from 'sweetalert2';
 import Chart from 'chart.js/auto';
+import jQuery from 'jquery';
+window.$ = jQuery;
+
+import DataTable from 'datatables.net-bs5';
+window.DataTable = DataTable;
 
 window.Swal = Swal;
 window.Chart = Chart;
@@ -85,6 +90,23 @@ document.addEventListener('DOMContentLoaded', function () {
             event.preventDefault();
             var logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'));
             logoutModal.show();
+        });
+    }
+
+    window.confirmLogout = function(formId) {
+        Swal.fire({
+            title: 'Apakah Anda yakin ingin keluar?',
+            text: "Anda akan keluar dari sesi Anda saat ini.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Keluar!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(formId).submit();
+            }
         });
     }
     // Listen for new announcements

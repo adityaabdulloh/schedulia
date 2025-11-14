@@ -9,6 +9,22 @@ use Illuminate\Support\Facades\Auth;
 
 class PengumumanController extends Controller
 {
+    public function index()
+    {
+        $pengumumans = Pengumuman::with('jadwalKuliah.pengampu.matakuliah', 'dosen')
+            ->where('dosen_id', Auth::user()->dosen->id)
+            ->latest()
+            ->paginate(10);
+
+        return view('pengumuman.index', compact('pengumumans'));
+    }
+
+    public function show(Pengumuman $pengumuman)
+    {
+        $pengumuman->load('jadwalKuliah.pengampu.matakuliah', 'jadwalKuliah.pengampu.kelas', 'jadwalKuliah.hari', 'jadwalKuliah.jam', 'jadwalKuliah.ruang', 'dosen');
+
+        return view('pengumuman.show', compact('pengumuman'));
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -45,6 +61,6 @@ class PengumumanController extends Controller
             'pesan' => $request->pesan,
         ]);
 
-        return redirect()->route('dosen.dashboard')->with('success', 'Pengumuman berhasil dikirim!');
+        return redirect()->route('pengumuman.index')->with('success', 'Pengumuman berhasil dikirim!');
     }
 }

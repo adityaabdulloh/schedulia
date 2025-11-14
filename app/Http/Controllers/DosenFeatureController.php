@@ -10,32 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class DosenFeatureController extends Controller
 {
-    public function daftarMahasiswa()
-    {
-        $user = Auth::user();
-        $dosen = Dosen::where('email', $user->email)->firstOrFail();
-
-        $pengampuRecords = $dosen->pengampus()->with('matakuliah', 'kelas')->get();
-        $matakuliahIdsTaughtByDosen = $pengampuRecords->pluck('matakuliah_id')->unique();
-
-        // Get unique mahasiswa_id from PengambilanMK where status is 'approved'
-        // and matakuliah_id is one of the courses taught by this dosen
-        $validatedMahasiswaIds = PengambilanMK::whereIn('matakuliah_id', $matakuliahIdsTaughtByDosen)
-            ->where('status', 'approved')
-            ->pluck('mahasiswa_id')
-            ->unique();
-
-        // Get students based on the validatedMahasiswaIds
-        $mahasiswa = Mahasiswa::whereIn('id', $validatedMahasiswaIds)
-            ->with('prodi', 'kelas')
-            ->orderBy('nama')
-            ->get();
-
-        
-
-        return view('dosen.mahasiswa.index', compact('mahasiswa', 'pengampuRecords'));
-    }
-
     public function inputNilai()
     {
         // Logic for inputting grades
@@ -68,5 +42,15 @@ class DosenFeatureController extends Controller
     public function absensi()
     {
         return view('dosen.absensi');
+    }
+
+    public function pengambilanMkDosen()
+    {
+        return view('dosen.mahasiswa.pengambilanmk');
+    }
+
+    public function absensiMahasiswa()
+    {
+        return view('dosen.mahasiswa.absensi');
     }
 }

@@ -27,6 +27,7 @@
                                     <th class="fw-bold" style="color: black; background-color: #d9edfc;">Dosen</th>
                                     <th class="fw-bold" style="color: black; background-color: #d9edfc;">Ruang</th>
                                     <th class="fw-bold" style="color: black; background-color: #d9edfc;">Kelas</th>
+                                    <th class="fw-bold" style="color: black; background-color: #d9edfc;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,10 +52,13 @@
                                     </td>
                                     <td>{{ $j->ruang->nama_ruang ?? '-' }}</td>
                                     <td>{{ $j->pengampu->kelas->nama_kelas ?? '-' }}</td>
+                                    <td>
+                                        <a href="{{ route('pengumuman.create', ['jadwalKuliah' => $j->id]) }}" class="btn btn-primary btn-sm">Buat Pengumuman</a>
+                                    </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6" class="text-center">Tidak ada data jadwal dosen yang tersedia.</td>
+                                    <td colspan="7" class="text-center">Tidak ada data jadwal dosen yang tersedia.</td>
                                 </tr>
                                 @endforelse
                             </tbody>

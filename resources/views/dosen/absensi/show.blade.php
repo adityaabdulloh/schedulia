@@ -137,6 +137,7 @@
                                 <table class="table table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
+                                            <th>Foto Profil</th>
                                             <th>NIM</th>
                                             <th>Nama Mahasiswa</th>
                                             <th class="text-center">Status Kehadiran</th>
@@ -145,6 +146,9 @@
                                     <tbody>
                                         @forelse($mahasiswa as $m)
                                         <tr>
+                                            <td>
+                                                <img src="{{ $m->foto_profil ? asset('storage/foto_profil/' . $m->foto_profil) : asset('images/default-profil.svg') }}" alt="Foto Profil" class="rounded-circle" width="40" height="40">
+                                            </td>
                                             <td>{{ $m->nim }}</td>
                                             <td>{{ $m->nama }}</td>
                                             <td>
@@ -171,7 +175,7 @@
                                         </tr>
                                         @empty
                                         <tr>
-                                            <td colspan="3" class="text-center py-5">
+                                            <td colspan="4" class="text-center py-5">
                                                 <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
                                                 <p class="text-muted">Tidak ada mahasiswa yang mengambil mata kuliah ini.</p>
                                             </td>
@@ -205,6 +209,7 @@
                             <table class="table table-bordered table-hover align-middle">
                                 <thead class="table-light">
                                     <tr>
+                                        <th>Foto Profil</th>
                                         <th>Nama Mahasiswa</th>
                                         @foreach($pertemuanTerisi as $pertemuan)
                                             <th class="text-center">P{{ $pertemuan }}</th>
@@ -214,6 +219,9 @@
                                 <tbody>
                                     @foreach($mahasiswa as $m)
                                         <tr>
+                                            <td>
+                                                <img src="{{ $m->foto_profil ? asset('storage/foto_profil/' . $m->foto_profil) : asset('images/default-profil.svg') }}" alt="Foto Profil" class="rounded-circle" width="40" height="40">
+                                            </td>
                                             <td>{{ $m->nama }}</td>
                                             @foreach($pertemuanTerisi as $pertemuan)
                                                 <td class="text-center p-2">

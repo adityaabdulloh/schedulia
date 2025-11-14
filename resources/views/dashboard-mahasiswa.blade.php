@@ -240,6 +240,82 @@
         border-radius: 5px;
         transition: width 1s linear;
     }
+
+    /* --- Announcement Widget Specific Styles --- */
+    .announcement-card {
+        background-color: #fff;
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        margin-bottom: 1rem;
+        padding: 1.25rem;
+        border-left: 0.3rem solid transparent;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .announcement-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--card-shadow-hover);
+    }
+    .announcement-card.info-type { border-left-color: var(--primary-color); }
+    .announcement-card.warning-type { border-left-color: var(--warning-color); }
+    .announcement-card.danger-type { border-left-color: var(--danger-color); }
+    .announcement-card.success-type { border-left-color: var(--secondary-color); }
+
+    .announcement-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+    .announcement-icon {
+        font-size: 1.8rem;
+        margin-right: 1rem;
+        opacity: 0.7;
+    }
+    .announcement-card.info-type .announcement-icon { color: var(--primary-color); }
+    .announcement-card.warning-type .announcement-icon { color: var(--warning-color); }
+    .announcement-card.danger-type .announcement-icon { color: var(--danger-color); }
+    .announcement-card.success-type .announcement-icon { color: var(--secondary-color); }
+
+    .announcement-title {
+        font-weight: 700;
+        color: var(--text-color);
+        font-size: 1.1rem;
+        line-height: 1.3;
+    }
+    .announcement-meta {
+        font-size: 0.85rem;
+        color: var(--text-light);
+        margin-top: 0.25rem;
+    }
+    .announcement-content {
+        color: var(--text-color);
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+    .announcement-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+        color: var(--text-light);
+        border-top: 1px solid var(--bg-dark);
+        padding-top: 0.75rem;
+        margin-top: 0.75rem;
+    }
+    .announcement-type-badge {
+        padding: 0.3em 0.6em;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .announcement-type-badge.info { background-color: var(--primary-color); color: #fff; }
+    .announcement-type-badge.warning { background-color: var(--warning-color); color: #fff; }
+    .announcement-type-badge.danger { background-color: var(--danger-color); color: #fff; }
+    .announcement-type-badge.success { background-color: var(--secondary-color); color: #fff; }
+    /* --- End Announcement Widget Specific Styles --- */
 </style>
 
 <div class="container-fluid">
@@ -287,25 +363,41 @@
                     @if(isset($pengumuman) && $pengumuman->count() > 0)
                         @foreach($pengumuman as $item)
                             @php
-                                $alertClass = 'alert-info'; // Default
+                                $cardClass = 'info-type';
+                                $iconClass = 'fas fa-info-circle';
+                                $badgeClass = 'info';
+
                                 if ($item->tipe == 'perubahan') {
-                                    $alertClass = 'alert-warning';
+                                    $cardClass = 'warning-type';
+                                    $iconClass = 'fas fa-exclamation-triangle';
+                                    $badgeClass = 'warning';
                                 } elseif ($item->tipe == 'pembatalan') {
-                                    $alertClass = 'alert-danger';
+                                    $cardClass = 'danger-type';
+                                    $iconClass = 'fas fa-times-circle';
+                                    $badgeClass = 'danger';
+                                } elseif ($item->tipe == 'informasi') { // Assuming 'informasi' is a type for general info
+                                    $cardClass = 'info-type';
+                                    $iconClass = 'fas fa-info-circle';
+                                    $badgeClass = 'info';
                                 }
                             @endphp
-                            <div class="alert {{ $alertClass }}" role="alert">
-                                <h5 class="alert-heading">
-                                    {{ $item->jadwalKuliah->pengampu->matakuliah->nama }}
-                                    <span class="badge badge-secondary">{{ ucfirst($item->tipe) }}</span>
-                                </h5>
-                                <p>{{ $item->pesan }}</p>
-                                <hr>
-                                <p class="mb-0 text-right">
-                                    <small>
-                                        Oleh: {{ $item->dosen->nama }} | {{ $item->created_at->diffForHumans() }}
-                                    </small>
-                                </p>
+                            <div class="announcement-card {{ $cardClass }}">
+                                <div class="announcement-header">
+                                    <i class="announcement-icon {{ $iconClass }}"></i>
+                                    <div>
+                                        <h5 class="announcement-title">{{ $item->jadwalKuliah->pengampu->matakuliah->nama }}</h5>
+                                        <div class="announcement-meta">
+                                            <span class="announcement-type-badge {{ $badgeClass }}">{{ ucfirst($item->tipe) }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="announcement-content">
+                                    <p>{{ $item->pesan }}</p>
+                                </div>
+                                <div class="announcement-footer">
+                                    <span>Oleh: {{ $item->dosen->nama }}</span>
+                                    <span>{{ $item->created_at->translatedFormat('d M Y, H:i') }}</span>
+                                </div>
                             </div>
                         @endforeach
                     @else

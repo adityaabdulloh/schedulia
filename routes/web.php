@@ -58,11 +58,14 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
     Route::put('dosen/profil', [DosenController::class, 'updateProfile'])->name('dosen.update-profile');
 
     // New routes for DosenFeatureController
-    Route::get('dosen/mahasiswa', [DosenFeatureController::class, 'daftarMahasiswa'])->name('dosen.mahasiswa.index');
+    Route::get('dosen/mahasiswa/pengambilanmk', [DosenFeatureController::class, 'pengambilanMkDosen'])->name('dosen.mahasiswa.pengambilanmk');
+    Route::get('dosen/mahasiswa/absensi', [DosenFeatureController::class, 'absensiMahasiswa'])->name('dosen.mahasiswa.absensi');
     Route::get('dosen/input-nilai', [DosenFeatureController::class, 'inputNilai'])->name('dosen.nilai.input');
     Route::get('dosen/materi-kuliah', [DosenFeatureController::class, 'materiKuliah'])->name('dosen.materi.index');
     Route::get('pengumuman/create/{jadwalKuliah}', [PengumumanController::class, 'create'])->name('pengumuman.create');
     Route::post('pengumuman', [PengumumanController::class, 'store'])->name('pengumuman.store');
+    Route::get('pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index');
+    Route::get('pengumuman/{pengumuman}', [PengumumanController::class, 'show'])->name('pengumuman.show');
     Route::get('dosen/pengambilan-mk', [DosenFeatureController::class, 'pengambilanMk'])->name('dosen.pengambilan-mk.index');
     
     // Routes for Absensi

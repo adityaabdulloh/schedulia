@@ -71,7 +71,7 @@
             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                 @csrf
             </form>
-            <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="btn btn-danger ms-3">Logout</a>
+            <a href="#" onclick="event.preventDefault(); confirmLogout('logout-form');" class="btn btn-danger ms-3">Logout</a>
         </div>
         @endauth
     </div>
