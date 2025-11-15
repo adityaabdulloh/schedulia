@@ -57,10 +57,10 @@
         </div>
 
         <div class="form-group">
-            <label for="jam_id">Jam</label>
-            <select name="jam_id" id="jam_id" class="form-control" required>
- @foreach($jam as $item)
-                    <option value="{{ $item->id }}" {{ $item->id == $jadwal->jam_id ? 'selected' : '' }}>
+            <label for="jam_mulai">Jam Mulai</label>
+            <select name="jam_mulai" id="jam_mulai" class="form-control" required>
+                @foreach($jam as $item)
+                    <option value="{{ $item->jam_mulai }}" {{ $item->jam_mulai == $jadwal->jam_mulai ? 'selected' : '' }}>
                         {{ $item->jam_mulai }}
                     </option>
                 @endforeach

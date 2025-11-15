@@ -11,7 +11,7 @@ class JadwalKuliah extends Model
 
     protected $table = 'jadwal_kuliah';
 
-    protected $fillable = ['pengampu_id', 'ruang_id', 'hari_id', 'jam_id', 'tahun_akademik', 'semester', 'kelas_id'];
+    protected $fillable = ['pengampu_id', 'ruang_id', 'hari_id', 'jam_mulai', 'jam_selesai', 'tahun_akademik', 'semester', 'kelas_id'];
 
     public function pengampu()
     {

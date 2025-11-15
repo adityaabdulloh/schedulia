@@ -1,451 +1,236 @@
 @extends('layouts.app')
 
 @section('content')
-<style>
-    :root {
-        --primary-color: #4e73df; /* Blue */
-        --secondary-color: #1cc88a; /* Green */
-        --accent-color: #36b9cc; /* Cyan */
-        --warning-color: #f6c23e; /* Yellow */
-        --danger-color: #e74a3b; /* Red */
-        --text-color: #5a5c69;
-        --text-light: #858796;
-        --bg-light: #f8f9fc;
-        --bg-dark: #e4e6ef;
-        --card-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-        --card-shadow-hover: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
-        --border-radius: 0.75rem;
-    }
-
-    body {
-        background-color: var(--bg-light);
-        font-family: 'Nunito', sans-serif; /* Assuming Nunito is available or linked in layouts.app */
-    }
-
-    .widget-card {
-        background-color: #fff;
-        border-radius: var(--border-radius);
-        box-shadow: var(--card-shadow);
-        margin-bottom: 1.5rem;
-        padding: 1.5rem;
-        transition: all 0.3s ease;
-        border-left: 0.25rem solid transparent; /* Subtle border for emphasis */
-    }
-
-    .widget-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--card-shadow-hover);
-    }
-
-    .widget-card.primary-border { border-left-color: var(--primary-color); }
-    .widget-card.secondary-border { border-left-color: var(--secondary-color); }
-    .widget-card.accent-border { border-left-color: var(--accent-color); }
-    .widget-card.warning-border { border-left-color: var(--warning-color); }
-
-    .widget-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 1rem;
-        border-bottom: 1px solid var(--bg-dark);
-        padding-bottom: 0.75rem;
-    }
-
-    .widget-title {
-        font-weight: 700;
-        color: var(--text-color);
-        font-size: 1.2rem;
-        display: flex;
-        align-items: center;
-    }
-    .widget-title i {
-        color: var(--primary-color); /* Default icon color */
-        margin-right: 0.5rem;
-    }
-    .widget-card.secondary-border .widget-title i { color: var(--secondary-color); }
-    .widget-card.accent-border .widget-title i { color: var(--accent-color); }
-    .widget-card.warning-border .widget-title i { color: var(--warning-color); }
-
-
-    /* --- Profile Widget Specific Styles --- */
-    .profile-widget {
-        text-align: center;
-        background: linear-gradient(135deg, #ffffff, var(--bg-light)); /* Subtle gradient background */
-        border-left-color: var(--primary-color);
-    }
-
-    .profile-widget .profile-img {
-        width: 100px; /* Larger image */
-        height: 100px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 5px solid var(--primary-color); /* Thicker border */
-        padding: 3px; /* Space between image and border */
-        box-shadow: 0 0 0.8rem rgba(0,0,0,0.15);
-        margin-bottom: 1rem; /* Space below image */
-        transition: transform 0.3s ease;
-    }
-
-    .profile-widget .profile-img:hover {
-        transform: scale(1.05);
-    }
-
-    .profile-widget .profile-name {
-        font-weight: 800; /* Bolder name */
-        font-size: 1.6rem; /* Even larger */
-        color: var(--text-color);
-        margin-bottom: 0.25rem;
-    }
-    .profile-widget .profile-nim {
-        font-size: 1rem;
-        color: var(--text-light);
-        margin-bottom: 1rem;
-    }
-
-    .profile-widget .btn-edit-profile {
-        margin-top: 1rem;
-        border-radius: 50px; /* Pill-shaped button */
-        padding: 0.5rem 1.5rem;
-        font-weight: 600;
-    }
-    /* --- End Profile Widget Specific Styles --- */
-
-
-    .jadwal-list {
-        list-style: none;
-        padding-left: 0;
-    }
-
-    .jadwal-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 1.25rem; /* Increased padding */
-        border-radius: 0.75rem; /* More rounded */
-        margin-bottom: 0.75rem;
-        background-color: var(--bg-light);
-        transition: all 0.3s ease;
-        border: 1px solid transparent;
-    }
-
-    .jadwal-item:hover {
-        background-color: var(--bg-dark);
-        border-color: var(--primary-color);
-        transform: translateX(5px);
-    }
-
-    .jadwal-item.active {
-        background: linear-gradient(45deg, var(--secondary-color), #28a745); /* Gradient background */
-        color: #fff;
-        box-shadow: 0 0.25rem 0.75rem rgba(28, 200, 138, 0.4);
-        border-color: var(--secondary-color);
-    }
-    .jadwal-item.active .jadwal-time,
-    .jadwal-item.active .jadwal-room,
-    .jadwal-item.active .jadwal-matkul,
-    .jadwal-item.active small {
-        color: #fff !important;
-    }
-    .jadwal-item.active .jadwal-matkul {
-        font-weight: 700;
-    }
-
-    .jadwal-time {
-        font-weight: 600;
-        color: var(--primary-color);
-        font-size: 1.1rem;
-    }
-    .jadwal-room {
-        font-style: italic;
-        color: var(--text-light);
-        font-size: 0.9rem;
-    }
-    .jadwal-info .jadwal-matkul {
-        font-weight: 600;
-        color: var(--text-color);
-    }
-
-    #digital-clock-widget {
-        text-align: center;
-        background: linear-gradient(135deg, var(--accent-color), #20c997); /* Gradient background */
-        color: #fff;
-        box-shadow: 0 0.25rem 0.75rem rgba(54, 185, 204, 0.4);
-        border-left-color: var(--accent-color);
-    }
-    #digital-clock-widget .widget-header {
-        border-bottom-color: rgba(255,255,255,0.3);
-    }
-    #digital-clock-widget .widget-title {
-        color: #fff;
-    }
-    #digital-clock-widget .widget-title i {
-        color: #fff;
-    }
-
-    #digital-clock {
-        font-size: 3rem; /* Larger clock */
-        font-weight: 800;
-        color: #fff;
-        letter-spacing: 2px;
-        text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-    }
-
-    #digital-date {
-        font-size: 1.1rem;
-        color: rgba(255,255,255,0.9);
-        margin-top: 0.5rem;
-    }
-
-    .btn-primary {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-        transition: all 0.3s ease;
-    }
-    .btn-primary:hover {
-        background-color: #3a5cdb;
-        border-color: #3a5cdb;
-        transform: translateY(-2px);
-    }
-    .btn-success {
-        background-color: var(--secondary-color);
-        border-color: var(--secondary-color);
-        transition: all 0.3s ease;
-    }
-    .btn-success:hover {
-        background-color: #17a673;
-        border-color: #17a673;
-        transform: translateY(-2px);
-    }
-    .btn-outline-primary {
-        color: var(--primary-color);
-        border-color: var(--primary-color);
-    }
-    .btn-outline-primary:hover {
-        background-color: var(--primary-color);
-        color: #fff;
-    }
-
-    /* Custom progress bar for schedule (optional, requires JS) */
-    .schedule-progress-bar {
-        height: 5px;
-        background-color: var(--bg-dark);
-        border-radius: 5px;
-        margin-top: 0.5rem;
-        overflow: hidden;
-    }
-    .schedule-progress {
-        height: 100%;
-        width: 0%;
-        background-color: var(--secondary-color);
-        border-radius: 5px;
-        transition: width 1s linear;
-    }
-
-    /* --- Announcement Widget Specific Styles --- */
-    .announcement-card {
-        background-color: #fff;
-        border-radius: var(--border-radius);
-        box-shadow: var(--card-shadow);
-        margin-bottom: 1rem;
-        padding: 1.25rem;
-        border-left: 0.3rem solid transparent;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    .announcement-card:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--card-shadow-hover);
-    }
-    .announcement-card.info-type { border-left-color: var(--primary-color); }
-    .announcement-card.warning-type { border-left-color: var(--warning-color); }
-    .announcement-card.danger-type { border-left-color: var(--danger-color); }
-    .announcement-card.success-type { border-left-color: var(--secondary-color); }
-
-    .announcement-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 0.75rem;
-    }
-    .announcement-icon {
-        font-size: 1.8rem;
-        margin-right: 1rem;
-        opacity: 0.7;
-    }
-    .announcement-card.info-type .announcement-icon { color: var(--primary-color); }
-    .announcement-card.warning-type .announcement-icon { color: var(--warning-color); }
-    .announcement-card.danger-type .announcement-icon { color: var(--danger-color); }
-    .announcement-card.success-type .announcement-icon { color: var(--secondary-color); }
-
-    .announcement-title {
-        font-weight: 700;
-        color: var(--text-color);
-        font-size: 1.1rem;
-        line-height: 1.3;
-    }
-    .announcement-meta {
-        font-size: 0.85rem;
-        color: var(--text-light);
-        margin-top: 0.25rem;
-    }
-    .announcement-content {
-        color: var(--text-color);
-        line-height: 1.6;
-        margin-bottom: 1rem;
-    }
-    .announcement-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 0.8rem;
-        color: var(--text-light);
-        border-top: 1px solid var(--bg-dark);
-        padding-top: 0.75rem;
-        margin-top: 0.75rem;
-    }
-    .announcement-type-badge {
-        padding: 0.3em 0.6em;
-        border-radius: 0.5rem;
-        font-weight: 600;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    .announcement-type-badge.info { background-color: var(--primary-color); color: #fff; }
-    .announcement-type-badge.warning { background-color: var(--warning-color); color: #fff; }
-    .announcement-type-badge.danger { background-color: var(--danger-color); color: #fff; }
-    .announcement-type-badge.success { background-color: var(--secondary-color); color: #fff; }
-    /* --- End Announcement Widget Specific Styles --- */
-</style>
-
 <div class="container-fluid">
     <!-- Welcome Header -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Dashboard Mahasiswa</h1>
     </div>
 
+    <!-- Welcome Message -->
+    <div class="welcome-message-box mb-4">
+        <div class="icon">
+            <i class="fas fa-sun"></i>
+        </div>
+        <div class="text">
+            <h4>Selamat Datang di Schedulia!</h4>
+            <p>Semoga kamu selalu bahagia dan tetap semangat menjalani hari.</p>
+        </div>
+    </div>
+
     <div class="row">
-        <!-- Kolom Kiri -->
+        <!-- Kolom Kiri (Konten Utama) -->
         <div class="col-lg-8">
             <!-- Widget Jadwal Hari Ini -->
-            <div class="widget-card secondary-border">
+            <div class="widget-card secondary-border mb-4">
                 <div class="widget-header">
-                    <h2 class="widget-title"><i class="fas fa-calendar-day mr-2"></i>Jadwal Kuliah Hari Ini</h2>
+                    <h2 class="widget-title"><i class="fas fa-calendar-day"></i>Jadwal Kuliah Hari Ini</h2>
+                    <span class="badge bg-success text-white">Hari Ini</span>
                 </div>
                 <ul class="jadwal-list">
-                    @if(isset($jadwalHariIni) && $jadwalHariIni->count() > 0)
-                        @foreach($jadwalHariIni as $jadwal)
-                            <li class="jadwal-item" data-start="{{ $jadwal->jam->jam_mulai }}" data-end="{{ $jadwal->jam->jam_selesai }}">
-                                <div class="jadwal-info">
-                                    <div class="jadwal-matkul">{{ $jadwal->pengampu->matakuliah->nama }}</div>
-                                    <small class="text-muted">{{ $jadwal->pengampu->dosen->first()->nama ?? 'N/A' }}</small>
-                                </div>
-                                <div class="text-right">
-                                    <div class="jadwal-time">{{ date('H:i', strtotime($jadwal->jam->jam_mulai)) }} - {{ date('H:i', strtotime($jadwal->jam->jam_selesai)) }}</div>
-                                    <div class="jadwal-room"><i class="fas fa-map-marker-alt mr-1"></i>{{ $jadwal->ruang->nama_ruang }}</div>
-                                </div>
-                            </li>
-                        @endforeach
-                    @else
-                        <li class="jadwal-item text-center d-block">
-                            <i class="fas fa-check-circle mr-2 text-success"></i>Tidak ada jadwal kuliah hari ini. Nikmati harimu!
+                    @forelse($jadwalHariIni as $jadwal)
+                        <li class="jadwal-item" data-start="{{ $jadwal->jam->jam_mulai }}" data-end="{{ $jadwal->jam->jam_selesai }}">
+                            <div class="jadwal-info">
+                                <div class="jadwal-matkul">{{ $jadwal->pengampu->matakuliah->nama }}</div>
+                                <small class="text-muted">{{ optional($jadwal->pengampu->dosen->first())->nama ?? 'Dosen belum ditentukan' }}</small>
+                            </div>
+                            <div class="text-right">
+                                <div class="jadwal-time">{{ date('H:i', strtotime($jadwal->jam->jam_mulai)) }} - {{ date('H:i', strtotime($jadwal->jam->jam_selesai)) }}</div>
+                                <div class="jadwal-room"><i class="fas fa-map-marker-alt fa-fw"></i>{{ $jadwal->ruang->nama_ruang }}</div>
+                            </div>
                         </li>
-                    @endif
+                    @empty
+                        <li class="jadwal-item text-center d-block">
+                            <i class="fas fa-check-circle text-success me-2"></i>Tidak ada jadwal kuliah hari ini. Waktunya produktif!
+                        </li>
+                    @endforelse
                 </ul>
             </div>
 
-            <!-- Widget Pengumuman -->
-            <div class="widget-card warning-border">
+            <!-- Widget Jadwal Minggu Ini (BARU) -->
+            <div class="widget-card primary-border">
                 <div class="widget-header">
-                    <h2 class="widget-title"><i class="fas fa-bullhorn mr-2"></i>Pengumuman Terbaru</h2>
+                    <h2 class="widget-title"><i class="fas fa-calendar-week"></i>Jadwal Minggu Ini</h2>
                 </div>
-                <div class="pengumuman-list">
-                    @if(isset($pengumuman) && $pengumuman->count() > 0)
-                        @foreach($pengumuman as $item)
-                            @php
-                                $cardClass = 'info-type';
-                                $iconClass = 'fas fa-info-circle';
-                                $badgeClass = 'info';
+                
+                <ul class="nav nav-tabs nav-fill mb-3" id="jadwalMingguIniTab" role="tablist">
+                    @foreach(['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] as $hari)
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link {{ $loop->first ? 'active' : '' }}" id="{{ strtolower($hari) }}-tab" data-bs-toggle="tab" data-bs-target="#{{ strtolower($hari) }}" type="button" role="tab">{{ $hari }}</button>
+                        </li>
+                    @endforeach
+                </ul>
 
-                                if ($item->tipe == 'perubahan') {
-                                    $cardClass = 'warning-type';
-                                    $iconClass = 'fas fa-exclamation-triangle';
-                                    $badgeClass = 'warning';
-                                } elseif ($item->tipe == 'pembatalan') {
-                                    $cardClass = 'danger-type';
-                                    $iconClass = 'fas fa-times-circle';
-                                    $badgeClass = 'danger';
-                                } elseif ($item->tipe == 'informasi') { // Assuming 'informasi' is a type for general info
-                                    $cardClass = 'info-type';
-                                    $iconClass = 'fas fa-info-circle';
-                                    $badgeClass = 'info';
-                                }
-                            @endphp
-                            <div class="announcement-card {{ $cardClass }}">
-                                <div class="announcement-header">
-                                    <i class="announcement-icon {{ $iconClass }}"></i>
-                                    <div>
-                                        <h5 class="announcement-title">{{ $item->jadwalKuliah->pengampu->matakuliah->nama }}</h5>
-                                        <div class="announcement-meta">
-                                            <span class="announcement-type-badge {{ $badgeClass }}">{{ ucfirst($item->tipe) }}</span>
+                <div class="tab-content" id="jadwalMingguIniTabContent">
+                    @foreach(['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] as $hari)
+                        <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ strtolower($hari) }}" role="tabpanel">
+                            <ul class="jadwal-list">
+                                @forelse($jadwalSeminggu[$hari] ?? [] as $jadwal)
+                                    <li class="jadwal-item">
+                                        <div class="jadwal-info">
+                                            <div class="jadwal-matkul">{{ $jadwal->pengampu->matakuliah->nama }}</div>
+                                            <small class="text-muted">{{ optional($jadwal->pengampu->dosen->first())->nama ?? 'Dosen belum ditentukan' }}</small>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="announcement-content">
-                                    <p>{{ $item->pesan }}</p>
-                                </div>
-                                <div class="announcement-footer">
-                                    <span>Oleh: {{ $item->dosen->nama }}</span>
-                                    <span>{{ $item->created_at->translatedFormat('d M Y, H:i') }}</span>
-                                </div>
-                            </div>
-                        @endforeach
-                    @else
-                        <p class="text-muted">Tidak ada pengumuman penting untuk saat ini.</p>
-                    @endif
+                                        <div class="text-right">
+                                            <div class="jadwal-time">{{ date('H:i', strtotime($jadwal->jam->jam_mulai)) }} - {{ date('H:i', strtotime($jadwal->jam->jam_selesai)) }}</div>
+                                            <div class="jadwal-room"><i class="fas fa-map-marker-alt fa-fw"></i>{{ $jadwal->ruang->nama_ruang }}</div>
+                                        </div>
+                                    </li>
+                                @empty
+                                    <li class="jadwal-item text-center d-block">
+                                        <i class="fas fa-coffee me-2"></i>Tidak ada jadwal kuliah.
+                                    </li>
+                                @endforelse
+                            </ul>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
 
-        <!-- Kolom Kanan -->
+        <!-- Kolom Kanan (Sidebar) -->
         <div class="col-lg-4">
+            <!-- Widget Jam Digital Atas -->
+            <div class="digital-clock-widget-top mb-4">
+                <div id="digital-clock-top"></div>
+                <div id="digital-date-top"></div>
+            </div>
+
             <!-- Widget Profil -->
-            <div class="widget-card primary-border profile-widget">
+            <div class="widget-card primary-border profile-widget mb-4">
                 <img src="{{ asset($mahasiswa->foto_profil ? 'storage/foto_profil/' . $mahasiswa->foto_profil : 'images/default-profil.svg') }}" alt="Foto Profil" class="profile-img">
                 <h3 class="profile-name">{{ Auth::user()->name }}</h3>
                 <p class="profile-nim">{{ $mahasiswa->nim }}</p>
                 <p class="mb-1 text-muted"><strong>Prodi:</strong> {{ $mahasiswa->prodi->nama_prodi }}</p>
                 <p class="mb-3 text-muted"><strong>Semester:</strong> {{ $mahasiswa->semester }}</p>
-                <a href="{{ route('mahasiswa.profil.edit') }}" class="btn btn-primary btn-sm btn-edit-profile"><i class="fas fa-user-edit mr-1"></i>Edit Profil</a>
-            </div>
-
-            <!-- Widget Jam & Tanggal -->
-            <div id="digital-clock-widget" class="widget-card accent-border">
-                <div class="widget-header">
-                    <h2 class="widget-title"><i class="fas fa-clock mr-2"></i>Waktu Saat Ini</h2>
-                </div>
-                <div id="digital-clock"></div>
-                <div id="digital-date"></div>
+                <a href="{{ route('mahasiswa.profil.edit') }}" class="btn btn-primary btn-sm btn-edit-profile"><i class="fas fa-user-edit me-1"></i>Edit Profil</a>
             </div>
 
             
         </div>
     </div>
+    
+    <div class="row mt-2">
+        <div class="col-12">
+            <!-- Widget Pengumuman -->
+            <div class="widget-card warning-border">
+                <div class="widget-header">
+                    <h2 class="widget-title"><i class="fas fa-bullhorn"></i>Pengumuman Penting</h2>
+                </div>
+                <div class="pengumuman-list">
+                    @forelse($pengumuman as $item)
+                        @php
+                            $cardClass = 'info-type'; $iconClass = 'fas fa-info-circle'; $badgeClass = 'info';
+                            if ($item->tipe == 'perubahan') { $cardClass = 'warning-type'; $iconClass = 'fas fa-exclamation-triangle'; $badgeClass = 'warning'; }
+                            elseif ($item->tipe == 'pembatalan') { $cardClass = 'danger-type'; $iconClass = 'fas fa-times-circle'; $badgeClass = 'danger'; }
+                        @endphp
+                        <div class="announcement-card {{ $cardClass }}">
+                            <div class="announcement-header">
+                                <i class="announcement-icon {{ $iconClass }}"></i>
+                                <div>
+                                    <h5 class="announcement-title">{{ $item->jadwalKuliah->pengampu->matakuliah->nama }}</h5>
+                                    <div class="announcement-meta">
+                                        <span class="announcement-type-badge {{ $badgeClass }}">{{ ucfirst($item->tipe) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="announcement-content">
+                                <p>{{ $item->pesan }}</p>
+                            </div>
+                            <div class="announcement-footer">
+                                <span>Oleh: {{ $item->dosen->nama }}</span>
+                                <span>{{ $item->created_at->translatedFormat('d M Y, H:i') }}</span>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-muted text-center">Tidak ada pengumuman penting untuk saat ini.</p>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+@endsection
 
+@push('styles')
+<style>
+.digital-clock-widget-top {
+    background-color: #4e73df; /* Warna primer tema */
+    color: #ffffff;
+    text-align: center;
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#digital-clock-top {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+#digital-date-top {
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.welcome-message-box {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(90deg, #4e73df 0%, #224abe 100%);
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.welcome-message-box .icon {
+    font-size: 2.5rem;
+    margin-right: 20px;
+    animation: spin 4s linear infinite;
+}
+
+.welcome-message-box .text h4 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.welcome-message-box .text p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+</style>
+@endpush
+
+@push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Fungsi untuk mengupdate jam digital
     function updateClock() {
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
         const seconds = String(now.getSeconds()).padStart(2, '0');
-        document.getElementById('digital-clock').textContent = `${hours}:${minutes}:${seconds}`;
+        
+        const clockElTop = document.getElementById('digital-clock-top');
+        if (clockElTop) {
+            clockElTop.textContent = `${hours}:${minutes}:${seconds}`;
+        }
 
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('digital-date').textContent = now.toLocaleDateString('id-ID', options);
+        const dateElTop = document.getElementById('digital-date-top');
+        if (dateElTop) {
+            dateElTop.textContent = now.toLocaleDateString('id-ID', options);
+        }
     }
 
+    // Fungsi untuk menandai jadwal yang sedang berlangsung
     function updateScheduleHighlight() {
         const now = new Date();
         const currentTimeMinutes = now.getHours() * 60 + now.getMinutes();
@@ -467,10 +252,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Inisialisasi dan interval
     updateClock();
     updateScheduleHighlight();
     setInterval(updateClock, 1000);
-    setInterval(updateScheduleHighlight, 60000); // Check every minute
+    setInterval(updateScheduleHighlight, 60000); // Cek setiap menit
+
+    // Bootstrap Tab
+    var triggerTabList = [].slice.call(document.querySelectorAll('#jadwalMingguIniTab button'))
+    triggerTabList.forEach(function (triggerEl) {
+        var tabTrigger = new bootstrap.Tab(triggerEl)
+
+        triggerEl.addEventListener('click', function (event) {
+            event.preventDefault()
+            tabTrigger.show()
+        })
+    })
 });
 </script>
-@endsection
+@endpush

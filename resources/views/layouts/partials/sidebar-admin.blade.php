@@ -21,17 +21,10 @@
     <a href="{{ url('/kelas') }}" class="sidebar-link {{ request()->is('kelas*') ? 'active' : '' }}">
         <i class="bi bi-person-lines-fill"></i> <span class="sidebar-link-text">Kelas</span>
     </a>
-    <a href="{{ url('/mahasiswa') }}" class="sidebar-link {{ request()->is('mahasiswa*') ? 'active' : '' }}" data-bs-toggle="collapse" data-bs-target="#manajemen-mahasiswa-submenu" role="button" aria-expanded="false" aria-controls="manajemen-mahasiswa-submenu">
+    <a href="{{ url('/mahasiswa') }}" class="sidebar-link {{ request()->is('mahasiswa*') ? 'active' : '' }}">
         <i class="bi bi-person-vcard"></i> <span class="sidebar-link-text">Mahasiswa</span>
     </a>
-    <div class="collapse" id="manajemen-mahasiswa-submenu">
-        <a href="{{ url('/mahasiswa') }}" class="sidebar-link submenu-link {{ request()->is('mahasiswa*') ? 'active' : '' }}">
-            <i class="bi bi-dot"></i> <span class="sidebar-link-text">Data Mahasiswa</span>
-        </a>
-    </div>
-    <a href="{{ url('/jam') }}" class="sidebar-link {{ request()->is('jam*') ? 'active' : '' }}">
-        <i class="bi bi-clock"></i> <span class="sidebar-link-text">Waktu</span>
-    </a>
+    
     <a href="{{ url('/pengampu') }}" class="sidebar-link {{ request()->is('pengampu*') ? 'active' : '' }}">
         <i class="bi bi-person-check"></i> <span class="sidebar-link-text">Pengampu</span>
     </a>

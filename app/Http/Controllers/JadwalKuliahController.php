@@ -11,12 +11,13 @@ use App\Models\Matakuliah;
 use App\Models\Pengampu;
 use App\Models\Ruang;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class JadwalKuliahController extends Controller
 {
     public function index(Request $request)
     {
-        $query = JadwalKuliah::with(['pengampu.matakuliah', 'pengampu.dosen', 'ruang', 'hari', 'jam', 'pengampu.kelas', 'pengampu.prodi']);
+        $query = JadwalKuliah::with(['pengampu.matakuliah', 'pengampu.dosen', 'ruang', 'hari', 'pengampu.kelas', 'pengampu.prodi']);
 
         // Search functionality
         if ($request->has('search') && !empty($request->search)) {
@@ -30,9 +31,8 @@ class JadwalKuliahController extends Controller
                     $q2->whereRaw('LOWER(nama_ruang) LIKE ?', ["%{$searchTerm}%"]);
                 })->orWhereHas('hari', function ($q2) use ($searchTerm) {
                     $q2->whereRaw('LOWER(nama_hari) LIKE ?', ["%{$searchTerm}%"]);
-                })->orWhereHas('jam', function ($q2) use ($searchTerm) {
-                    $q2->whereRaw('LOWER(jam_mulai) LIKE ?', ["%{$searchTerm}%"]);
-                })->orWhereHas('pengampu.kelas', function ($q2) use ($searchTerm) {
+                })->orWhereRaw('LOWER(jam_mulai) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereHas('pengampu.kelas', function ($q2) use ($searchTerm) {
                     $q2->whereRaw('LOWER(nama_kelas) LIKE ?', ["%{$searchTerm}%"]);
                 });
             });
@@ -49,9 +49,13 @@ class JadwalKuliahController extends Controller
         $pengampus = Pengampu::with(['matakuliah', 'dosen', 'kelas'])->get();
         $ruangs = Ruang::all();
         $haris = Hari::all();
-        $jams = Jam::all();
+        
+        // Membuat pemetaan dari pengampu_id ke sks
+        $sksData = $pengampus->keyBy('id')->map(function ($pengampu) {
+            return $pengampu->matakuliah->sks;
+        });
 
-        return view('jadwal.create', compact('pengampus', 'ruangs', 'haris', 'jams'));
+        return view('jadwal.create', compact('pengampus', 'ruangs', 'haris', 'sksData'));
     }
 
     public function store(Request $request)
@@ -60,34 +64,119 @@ class JadwalKuliahController extends Controller
             'pengampu_id' => 'required|exists:pengampu,id',
             'ruang_id' => 'required|exists:ruang,id',
             'hari_id' => 'required|exists:hari,id',
-            'jam_id' => 'required|exists:jam,id',
             'tahun_akademik' => 'required|string',
+            'metode_penjadwalan' => 'required|in:otomatis,manual',
+            'jam_mulai_manual' => 'required_if:metode_penjadwalan,manual|date_format:H:i',
         ]);
 
-        // Cek apakah sudah ada jadwal dengan ruang, hari, dan jam yang sama
-        $existingJadwal = JadwalKuliah::where('ruang_id', $request->ruang_id)
-            ->where('hari_id', $request->hari_id)
-            ->where('jam_id', $request->jam_id)
-            ->first();
+        $pengampu = Pengampu::with(['matakuliah', 'dosen'])->findOrFail($request->pengampu_id);
+        $sks = $pengampu->matakuliah->sks;
+        $durasiMenit = $sks * 50;
 
-        if ($existingJadwal) {
-            return redirect()->back()->with('error', 'Jadwal dengan ruang, hari, dan jam yang sama sudah ada.');
+        if ($request->metode_penjadwalan == 'manual') {
+            $jamMulai = Carbon::createFromTimeString($request->jam_mulai_manual);
+            $jamSelesai = $jamMulai->copy()->addMinutes($durasiMenit);
+
+            // Cek apakah ada bentrokan jadwal untuk dosen, ruangan, atau kelas
+            $isConflict = JadwalKuliah::where('hari_id', $request->hari_id)
+                ->where(function ($query) use ($jamMulai, $jamSelesai) {
+                    $query->where('jam_mulai', '<', $jamSelesai->format('H:i:s'))
+                          ->where('jam_selesai', '>', $jamMulai->format('H:i:s'));
+                })
+                ->where(function ($q) use ($request, $pengampu) {
+                    $dosenIds = $pengampu->dosen->pluck('id');
+                    $q->where('ruang_id', $request->ruang_id)
+                        ->orWhereHas('pengampu', function ($q) use ($dosenIds) {
+                            if ($dosenIds->isNotEmpty()) {
+                                $q->whereHas('dosen', function ($q2) use ($dosenIds) {
+                                    $q2->whereIn('dosen.id', $dosenIds);
+                                });
+                            }
+                        })
+                        ->orWhere('kelas_id', $pengampu->kelas_id);
+                })
+                ->exists();
+
+            if ($isConflict) {
+                return redirect()->back()->with('error', 'Jadwal bentrok dengan jadwal lain.');
+            }
+
+            // Simpan data
+            JadwalKuliah::create([
+                'pengampu_id' => $request->pengampu_id,
+                'ruang_id' => $request->ruang_id,
+                'hari_id' => $request->hari_id,
+                'jam_mulai' => $jamMulai->format('H:i:s'),
+                'jam_selesai' => $jamSelesai->format('H:i:s'),
+                'tahun_akademik' => $request->tahun_akademik,
+                'semester' => $pengampu->matakuliah->semester,
+                'kelas_id' => $pengampu->kelas_id,
+            ]);
+
+            return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil ditambahkan!');
+        } else {
+            // Definisikan slot waktu mulai
+            $jamList = [];
+            $startTime = Carbon::createFromTimeString('07:00:00');
+            $endTime = Carbon::createFromTimeString('17:00:00');
+            while ($startTime <= $endTime) {
+                $jamList[] = $startTime->copy();
+                $startTime->addMinutes(60);
+            }
+
+            foreach ($jamList as $jamMulai) {
+                $jamSelesai = $jamMulai->copy()->addMinutes($durasiMenit);
+
+                // Cek apakah ada bentrokan jadwal untuk dosen, ruangan, atau kelas
+                $isConflict = JadwalKuliah::where('hari_id', $request->hari_id)
+                    ->where(function ($query) use ($jamMulai, $jamSelesai) {
+                        $query->where('jam_mulai', '<', $jamSelesai->format('H:i:s'))
+                              ->where('jam_selesai', '>', $jamMulai->format('H:i:s'));
+                    })
+                    ->where(function ($q) use ($request, $pengampu) {
+                        $dosenIds = $pengampu->dosen->pluck('id');
+                        $q->where('ruang_id', $request->ruang_id)
+                            ->orWhereHas('pengampu', function ($q) use ($dosenIds) {
+                                if ($dosenIds->isNotEmpty()) {
+                                    $q->whereHas('dosen', function ($q2) use ($dosenIds) {
+                                        $q2->whereIn('dosen.id', $dosenIds);
+                                    });
+                                }
+                            })
+                            ->orWhere('kelas_id', $pengampu->kelas_id);
+                    })
+                    ->exists();
+
+                if (! $isConflict) {
+                    // Simpan data
+                    JadwalKuliah::create([
+                        'pengampu_id' => $request->pengampu_id,
+                        'ruang_id' => $request->ruang_id,
+                        'hari_id' => $request->hari_id,
+                        'jam_mulai' => $jamMulai->format('H:i:s'),
+                        'jam_selesai' => $jamSelesai->format('H:i:s'),
+                        'tahun_akademik' => $request->tahun_akademik,
+                        'semester' => $pengampu->matakuliah->semester,
+                        'kelas_id' => $pengampu->kelas_id,
+                    ]);
+
+                    return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil ditambahkan!');
+                }
+            }
+
+            return redirect()->back()->with('error', 'Tidak dapat menemukan slot waktu yang tersedia untuk jadwal ini pada hari dan ruangan yang dipilih.');
         }
-
-        JadwalKuliah::create($request->all());
-
-        return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil ditambahkan!');
     }
 
     public function edit($id)
     {
-        $jadwal = JadwalKuliah::with(['pengampu.matakuliah', 'pengampu.dosen', 'ruang', 'hari', 'jam', 'pengampu.kelas', 'pengampu.prodi'])
+        $jadwal = JadwalKuliah::with(['pengampu.matakuliah', 'pengampu.dosen', 'ruang', 'hari', 'pengampu.kelas', 'pengampu.prodi'])
             ->findOrFail($id);
 
         $pengampu = Pengampu::with(['matakuliah', 'dosen'])->get();
         $ruang = Ruang::all();
         $hari = Hari::all();
-        $jam = Jam::all();
+        $jam = Jam::orderBy('jam_mulai')->get();
         $kelas = Kelas::all();
 
         return view('jadwal.edit', compact('jadwal', 'pengampu', 'ruang', 'hari', 'jam', 'kelas'));
@@ -99,15 +188,25 @@ class JadwalKuliahController extends Controller
             'pengampu_id' => 'required',
             'ruang_id' => 'required',
             'hari_id' => 'required',
-            'jam_id' => 'required',
+            'jam_mulai' => 'required',
             'tahun_akademik' => 'required',
         ]);
+
+        $pengampu = Pengampu::with('matakuliah')->findOrFail($request->pengampu_id);
+        $sks = $pengampu->matakuliah->sks;
+        $durasi = $sks * 50;
+
+        $jamMulai = Carbon::parse($request->jam_mulai);
+        $jamSelesai = $jamMulai->copy()->addMinutes($durasi);
 
         // Cek apakah sudah ada jadwal dengan ruang, hari, dan jam yang sama
         $existingJadwal = JadwalKuliah::where('ruang_id', $request->ruang_id)
             ->where('hari_id', $request->hari_id)
-            ->where('jam_id', $request->jam_id)
             ->where('id', '!=', $id) // Exclude the current record
+            ->where(function ($query) use ($jamMulai, $jamSelesai) {
+                $query->where('jam_mulai', '<', $jamSelesai->format('H:i:s'))
+                      ->where('jam_selesai', '>', $jamMulai->format('H:i:s'));
+            })
             ->first();
 
         if ($existingJadwal) {
@@ -115,13 +214,16 @@ class JadwalKuliahController extends Controller
         }
 
         $jadwal = JadwalKuliah::findOrFail($id);
-        $jadwal->update($request->only([
+        $data = $request->only([
             'pengampu_id',
             'ruang_id',
             'hari_id',
-            'jam_id',
             'tahun_akademik',
-        ]));
+        ]);
+        $data['jam_mulai'] = $jamMulai->format('H:i:s');
+        $data['jam_selesai'] = $jamSelesai->format('H:i:s');
+
+        $jadwal->update($data);
 
         return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil diperbarui!');
     }
@@ -155,9 +257,16 @@ class JadwalKuliahController extends Controller
 
         // Ambil daftar semua hari
         $hariList = Hari::all();
+        
+        // Definisikan slot waktu mulai secara manual
+        $jamList = [];
+        $startTime = Carbon::createFromTimeString('07:00:00');
+        $endTime = Carbon::createFromTimeString('17:00:00');
+        while ($startTime <= $endTime) {
+            $jamList[] = $startTime->copy();
+            $startTime->addMinutes(60); // Berpindah ke slot berikutnya setiap 60 menit
+        }
 
-        // Ambil daftar semua kelas
-        $kelasList = Kelas::all();
 
         // Variabel untuk melacak hari yang sudah digunakan untuk setiap mata kuliah
         $courseScheduledDays = [];
@@ -169,9 +278,9 @@ class JadwalKuliahController extends Controller
         // Loop untuk setiap pengampu mata kuliah
         foreach ($pengampuList as $pengampu) {
             $jadwalTersedia = false; // Indikator apakah jadwal telah ditemukan
-
-            // Ambil daftar jam berdasarkan jumlah SKS mata kuliah
-            $jamList = Jam::getJamBySKS($pengampu->matakuliah->sks);
+            
+            $sks = $pengampu->matakuliah->sks;
+            $durasiMenit = $sks * 50;
 
             // Acak daftar hari untuk memberikan variasi jadwal
             $shuffledHariList = $hariList->shuffle();
@@ -189,7 +298,7 @@ class JadwalKuliahController extends Controller
                 } // Keluar jika jadwal sudah ditemukan
 
                 // Loop melalui daftar jam
-                foreach ($jamList as $jam) {
+                foreach ($jamList as $jamMulai) {
                     // Loop melalui daftar ruangan
                     foreach ($ruangList as $ruang) {
                         // Cek apakah kapasitas ruangan memenuhi syarat
@@ -197,57 +306,49 @@ class JadwalKuliahController extends Controller
                             continue; // Lewati jika kapasitas tidak mencukupi
                         }
 
-                        // Loop melalui daftar kelas
-                        foreach ($kelasList as $kelas) {
-                            // Pastikan kelas berasal dari program studi yang sesuai
-                            if ($kelas->prodi_id == $pengampu->matakuliah->prodi_id) {
-                                $newStartTime = $jam->jam_mulai;
-                                $newEndTime = $jam->jam_selesai;
+                        $jamSelesai = $jamMulai->copy()->addMinutes($durasiMenit);
 
-                                // Cek apakah ada bentrokan jadwal untuk dosen, ruangan, atau kelas pada slot waktu yang tumpang tindih
-                                $isConflict = JadwalKuliah::where('hari_id', $hari->id)
-                                    ->whereHas('jam', function ($q) use ($newStartTime, $newEndTime) {
-                                        $q->where('jam_mulai', '<', $newEndTime)
-                                            ->where('jam_selesai', '>', $newStartTime);
-                                    })
-                                    ->where(function ($q) use ($ruang, $pengampu, $kelas) {
-                                        $dosenIds = $pengampu->dosen->pluck('id');
-                                        $q->where('ruang_id', $ruang->id)
-                                            ->orWhereHas('pengampu', function ($q) use ($dosenIds) {
-                                                if ($dosenIds->isNotEmpty()) {
-                                                    $q->whereHas('dosen', function ($q2) use ($dosenIds) {
-                                                        $q2->whereIn('dosen.id', $dosenIds);
-                                                    });
-                                                }
-                                            })
-                                            ->orWhereHas('pengampu', function ($q) use ($kelas) {
-                                                $q->where('kelas_id', $kelas->id);
+                        // Cek apakah ada bentrokan jadwal untuk dosen, ruangan, atau kelas pada slot waktu yang tumpang tindih
+                        $isConflict = JadwalKuliah::where('hari_id', $hari->id)
+                            ->where(function ($query) use ($jamMulai, $jamSelesai) {
+                                $query->where('jam_mulai', '<', $jamSelesai->format('H:i:s'))
+                                      ->where('jam_selesai', '>', $jamMulai->format('H:i:s'));
+                            })
+                            ->where(function ($q) use ($ruang, $pengampu) {
+                                $dosenIds = $pengampu->dosen->pluck('id');
+                                $q->where('ruang_id', $ruang->id)
+                                    ->orWhereHas('pengampu', function ($q) use ($dosenIds) {
+                                        if ($dosenIds->isNotEmpty()) {
+                                            $q->whereHas('dosen', function ($q2) use ($dosenIds) {
+                                                $q2->whereIn('dosen.id', $dosenIds);
                                             });
+                                        }
                                     })
-                                    ->exists();
+                                    ->orWhere('kelas_id', $pengampu->kelas_id);
+                            })
+                            ->exists();
 
-                                if (! $isConflict) {
-                                    // Buat entri jadwal baru
-                                    JadwalKuliah::create([
-                                        'pengampu_id' => $pengampu->id,
-                                        'ruang_id' => $ruang->id,
-                                        'hari_id' => $hari->id,
-                                        'jam_id' => $jam->id,
-                                        'tahun_akademik' => $request->tahun_akademik,
-                                        'semester' => $pengampu->matakuliah->semester,
-                                        'kelas_id' => $pengampu->kelas_id,
-                                    ]);
+                        if (! $isConflict) {
+                            // Buat entri jadwal baru
+                            JadwalKuliah::create([
+                                'pengampu_id' => $pengampu->id,
+                                'ruang_id' => $ruang->id,
+                                'hari_id' => $hari->id,
+                                'jam_mulai' => $jamMulai->format('H:i:s'),
+                                'jam_selesai' => $jamSelesai->format('H:i:s'),
+                                'tahun_akademik' => $request->tahun_akademik,
+                                'semester' => $pengampu->matakuliah->semester,
+                                'kelas_id' => $pengampu->kelas_id,
+                            ]);
 
-                                    // Tandai hari untuk mata kuliah ini
-                                    $courseScheduledDays[$pengampu->matakuliah->id][] = $hari->id;
+                            // Tandai hari untuk mata kuliah ini
+                            $courseScheduledDays[$pengampu->matakuliah->id][] = $hari->id;
 
-                                    $jadwalTersedia = true; // Jadwal telah ditemukan
-                                    $jadwalSuksesCount++;
-                                    break;
-                                }
-                            }
+                            $jadwalTersedia = true; // Jadwal telah ditemukan
+                            $jadwalSuksesCount++;
+                            break;
                         }
-
+                        
                         if ($jadwalTersedia) {
                             break;
                         } // Keluar jika jadwal ditemukan

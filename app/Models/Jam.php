@@ -51,13 +51,5 @@ class Jam extends Model
         $this->attributes['jam_selesai'] = Carbon::parse($value)->format('H:i:s');
     }
 
-    public static function getJamBySKS($sks)
-    {
-        // Durasi per SKS adalah 50 menit
-        $durasi_sks = $sks * 50;
-
-        // Ambil slot jam yang sesuai dengan durasi SKS
-        return self::where('durasi', '>=', $durasi_sks)
-            ->get();
-    }
+    
 }

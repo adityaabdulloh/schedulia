@@ -68,7 +68,7 @@
                                     <tr>
                                         <td>{{ $j->hari->nama_hari }}</td>
                                         <td>
-                                            {{ $j->jam->jam_mulai }} - {{ $j->jam->jam_selesai }}
+                                            {{ Carbon\Carbon::parse($j->jam_mulai)->format('H:i') }} - {{ Carbon\Carbon::parse($j->jam_selesai)->format('H:i') }}
                                             ({{ $j->pengampu->matakuliah->sks * 50 }} menit)
                                         </td>
                                         <td>

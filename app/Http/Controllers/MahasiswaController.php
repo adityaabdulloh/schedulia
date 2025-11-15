@@ -256,7 +256,7 @@ class MahasiswaController extends Controller
             $mahasiswa->user->update(['name' => $request->nama]);
         }
 
-        return redirect()->route('mahasiswa.profil')->with('success', 'Profil berhasil diperbarui.');
+        return redirect()->route('mahasiswa.dashboard')->with('success', 'Profil berhasil diperbarui.');
     }
 
     // Menghapus mahasiswa
