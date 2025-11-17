@@ -245,6 +245,27 @@ body {
 }
 
 /* Digital Clock Widget */
+.digital-clock-widget-content {
+    text-align: center;
+    padding: 20px 0; /* Increased padding for more breathing room */
+    color: var(--text-color); /* Use text color for better contrast within the card */
+}
+
+.digital-clock-widget-content #digital-clock-top {
+    font-size: 3rem; /* Even larger font size for prominence */
+    font-weight: 800; /* Bolder font weight */
+    letter-spacing: 3px; /* Increased letter spacing */
+    margin-bottom: 8px; /* Increased margin below clock */
+    color: var(--info-color); /* Use info color for the clock */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Subtle text shadow */
+}
+
+.digital-clock-widget-content #digital-date-top {
+    font-size: 1.1rem; /* Slightly larger date font size */
+    letter-spacing: 1.5px; /* Increased letter spacing */
+    color: var(--text-light); /* Use lighter text color for date */
+}
+
 #digital-clock-widget {
     text-align: center;
     padding: 2.5rem 1.5rem;
@@ -538,6 +559,39 @@ body {
 }
 
 .timeline-content .badge-info {
+    background-color: var(--info-color);
+    color: #fff;
+}
+
+/* Custom styles for attendance badges */
+.badge {
+    padding: 0.5em 0.8em;
+    border-radius: 0.5rem;
+    font-size: 0.9em;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+}
+
+.badge-success {
+    background-color: var(--secondary-color); /* Using secondary-color for success */
+    color: #fff;
+}
+
+.badge-danger {
+    background-color: var(--danger-color); /* Using danger-color for danger */
+    color: #fff;
+}
+
+/* Optional: Add styles for other potential statuses */
+.badge-warning {
+    background-color: var(--warning-color);
+    color: #fff;
+}
+
+.badge-info {
     background-color: var(--info-color);
     color: #fff;
 }

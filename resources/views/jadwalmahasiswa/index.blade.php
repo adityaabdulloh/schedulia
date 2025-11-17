@@ -202,8 +202,8 @@
                                 <tr class="day-{{ $j->hari->nama_hari ?? '' }}">
                                     <td>{{ $j->hari->nama_hari ?? '-' }}</td>
                                     <td>
-                                        @if ($j->jam)
-                                            <span class="badge bg-primary text-white">{{ date('H:i', strtotime($j->jam->jam_mulai)) }} - {{ date('H:i', strtotime($j->jam->jam_selesai)) }}</span>
+                                        @if ($j->jam_mulai && $j->jam_selesai)
+                                            <span class="badge bg-primary text-white">{{ $j->jam_mulai }} - {{ $j->jam_selesai }}</span>
                                         @else
                                             -
                                         @endif

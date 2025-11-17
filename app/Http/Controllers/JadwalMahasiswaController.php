@@ -25,7 +25,8 @@ class JadwalMahasiswaController extends Controller
             ->pluck('matakuliah_id');
 
         // Get JadwalKuliah entries that correspond to the approved matakuliah_id's and the student's class
-        $jadwalKuliah = JadwalKuliah::where('kelas_id', $mahasiswa->kelas_id)
+        $jadwalKuliah = JadwalKuliah::with(['hari', 'ruang', 'pengampu.matakuliah', 'pengampu.dosen', 'pengampu.kelas'])
+            ->where('kelas_id', $mahasiswa->kelas_id)
             ->whereHas('pengampu', function ($query) use ($approvedPengambilanMKs) {
                 $query->whereIn('matakuliah_id', $approvedPengambilanMKs);
             })
@@ -39,9 +40,7 @@ class JadwalMahasiswaController extends Controller
                         $subq->where('nama_ruang', 'like', '%'.$search.'%');
                     })->orWhereHas('hari', function ($subq) use ($search) {
                         $subq->where('nama_hari', 'like', '%'.$search.'%');
-                    })->orWhereHas('jam', function ($subq) use ($search) {
-                        $subq->where('jam_mulai', 'like', '%'.$search.'%');
-                    });
+                    })->orWhere('jam_mulai', 'like', '%'.$search.'%');
                 });
             })->paginate(10);
 
@@ -64,7 +63,8 @@ class JadwalMahasiswaController extends Controller
             ->pluck('matakuliah_id');
 
         // Get JadwalKuliah entries that correspond to the approved matakuliah_id's and the student's class
-        $jadwalKuliah = JadwalKuliah::where('kelas_id', $mahasiswa->kelas_id)
+        $jadwalKuliah = JadwalKuliah::with(['hari', 'ruang', 'pengampu.matakuliah', 'pengampu.dosen', 'pengampu.kelas'])
+            ->where('kelas_id', $mahasiswa->kelas_id)
             ->whereHas('pengampu', function ($query) use ($approvedPengambilanMKs) {
                 $query->whereIn('matakuliah_id', $approvedPengambilanMKs);
             })
@@ -78,9 +78,7 @@ class JadwalMahasiswaController extends Controller
                         $subq->where('nama_ruang', 'like', '%'.$search.'%');
                     })->orWhereHas('hari', function ($subq) use ($search) {
                         $subq->where('nama_hari', 'like', '%'.$search.'%');
-                    })->orWhereHas('jam', function ($subq) use ($search) {
-                        $subq->where('jam_mulai', 'like', '%'.$search.'%');
-                    });
+                    })->orWhere('jam_mulai', 'like', '%'.$search.'%');
                 });
             })->get();
 

@@ -13,7 +13,8 @@ class JadwalDosen extends Model
         'pengampu_id',
         'ruang_id',
         'hari_id',
-        'jam_id',
+        'jam_mulai',
+        'jam_selesai',
         'kelas_id',
         'tahun_akademik',
     ];
@@ -31,11 +32,6 @@ class JadwalDosen extends Model
     public function hari()
     {
         return $this->belongsTo(Hari::class);
-    }
-
-    public function jam()
-    {
-        return $this->belongsTo(Jam::class);
     }
 
     public function kelas()

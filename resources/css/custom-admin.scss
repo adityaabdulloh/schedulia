@@ -1,0 +1,78 @@
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+}
+.welcome-banner {
+    background: linear-gradient(45deg, #4e73df, #7a9bff, #1cc88a, #36b9cc);
+    background-size: 400% 400%;
+    color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    animation: fadeInDown 1s ease-out, gradientBG 15s ease infinite;
+}
+
+.stat-card .card {
+    animation: fadeInUp 0.8s ease-out;
+    background-size: 400% 400%;
+    transition: all 0.3s ease;
+}
+
+.stat-card .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 1.5rem 4rem rgba(0,0,0,.25)!important;
+}
+
+.quick-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100px;
+    border-radius: 10px;
+    background-color: #f8f9fc;
+    color: #5a5c69;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.quick-action-btn:hover {
+    background-color: #4e73df;
+    color: white;
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+.quick-action-btn i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}

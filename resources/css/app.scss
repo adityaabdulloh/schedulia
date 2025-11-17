@@ -1,7 +1,15 @@
-@import '~bootstrap/scss/bootstrap';
+@use "sass:color";
+@use "sass:math";
+@use "bootstrap/scss/bootstrap";
+@use 'dosen-dashboard';
+@use 'matakuliah';
 
-/* Import Google Fonts */
+@import 'datatables.net-bs5/css/dataTables.bootstrap5.css';
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Define color variables and base styles */
 :root {
@@ -256,6 +264,125 @@ body.sidebar-mobile-open .sidebar-backdrop {
     border-radius: 10px;
 }
 
+/* Custom styles for tables */
+.table {
+    border-radius: 8px;
+    overflow: hidden; /* Ensures rounded corners apply to children */
+    border: 1px solid rgba(0, 0, 0, 0.05); /* Light border for the whole table */
+}
+
+.table thead {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.table thead th {
+    border-bottom: none; /* Remove default border */
+    padding: 12px 15px;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(var(--primary-color-rgb), 0.05); /* Light hover effect */
+}
+
+.table-hover tbody tr:hover {
+    --bs-table-hover-bg: rgba(var(--primary-color-rgb), 0.05);
+}
+
+/* Card Header and Footer Styling */
+.card-header {
+    background-color: var(--card-bg);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1.25rem 1.5rem;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.card-footer {
+    background-color: var(--card-bg);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1rem 1.5rem;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+/* Form controls (select, input) within the card */
+.form-select,
+.form-control {
+    border-radius: 8px;
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-select:focus,
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--primary-color-rgb), 0.25);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    border-radius: 8px;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker shade of primary */
+    border-color: #0056b3;
+}
+
+.btn-outline-secondary {
+    border-radius: 8px;
+}
+
+.btn-outline-danger {
+    border-radius: 8px;
+}
+
+/* Pagination */
+.pagination .page-item .page-link {
+    border-radius: 8px;
+    margin: 0 2px;
+    color: var(--primary-color);
+    border-color: rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+}
+
+.pagination .page-item.disabled .page-link {
+    border-color: rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.3);
+}
+
+/* Alert messages */
+.alert {
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+}
+
+/* Utility for primary color RGB for rgba usage */
+:root {
+    --primary-color-rgb: 4, 113, 255; /* RGB values for #0471ff */
+}
+
 /* Profile Dropdown */
 .profile-section .dropdown-toggle {
     border-radius: 20px;
@@ -286,5 +413,7 @@ body.sidebar-mobile-open .sidebar-backdrop {
 /* Remove old layout styles */
 .layout { display: none; }
 
-@import 'dosen-dashboard.scss';
-@import 'datatables.net-bs5/css/dataTables.bootstrap5.css';
+.table-header-custom {
+    color: black;
+    background-color: #d9edfc;
+}

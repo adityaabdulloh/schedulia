@@ -12,25 +12,13 @@
     <a href="{{ url('/jadwaldosen') }}" class="sidebar-link {{ request()->is('jadwaldosen') ? 'active' : '' }}">
         <i class="bi bi-calendar-event"></i> <span class="sidebar-link-text">Jadwal Mengajar</span>
     </a>
+    <a href="{{ route('dosen.mahasiswa.index') }}" class="sidebar-link {{ request()->is('dosen/mahasiswa*') ? 'active' : '' }}">
+        <i class="bi bi-people-fill"></i> <span class="sidebar-link-text">Manajemen Mahasiswa</span>
+    </a>
     <a href="{{ route('pengumuman.index') }}" class="sidebar-link {{ request()->is('pengumuman*') ? 'active' : '' }}">
         <i class="bi bi-megaphone-fill"></i> <span class="sidebar-link-text">Pengumuman</span>
     </a>
     <a href="{{ url('/pengampu') }}" class="sidebar-link {{ request()->is('pengampu') ? 'active' : '' }}">
         <i class="bi bi-book-fill"></i> <span class="sidebar-link-text">Mata Kuliah</span>
     </a>
-
-    <div class="sidebar-link-wrapper">
-        <a href="#" class="sidebar-link dropdown-toggle {{ request()->is(['dosen/mahasiswa*', 'dosen/absensi*']) ? 'active' : '' }}" data-bs-toggle="collapse" data-bs-target="#mahasiswa-submenu-dosen">
-            <i class="bi bi-people-fill"></i> <span class="sidebar-link-text">Manajemen Mahasiswa</span>
-        </a>
-        <div class="collapse" id="mahasiswa-submenu-dosen">
-            
-            <a href="{{ url('dosen/pengambilan-mk') }}" class="sidebar-link sub-link {{ request()->is('dosen/pengambilan-mk') ? 'active' : '' }}">
-                <span class="sidebar-link-text">Ambil MK</span>
-            </a>
-            <a href="{{ route('dosen.absensi.index') }}" class="sidebar-link sub-link {{ request()->is('dosen/absensi*') ? 'active' : '' }}">
-                <span class="sidebar-link-text">Absensi</span>
-            </a>
-        </div>
-    </div>
 </div>

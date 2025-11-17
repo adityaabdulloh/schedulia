@@ -29,8 +29,8 @@
             <tr>
                 <td>{{ $j->hari->nama_hari ?? '-' }}</td>
                 <td>
-                    @if ($j->jam)
-                        {{ $j->jam->jam_mulai ?? '-' }} - {{ $j->jam->jam_selesai ?? '-' }}
+                    @if ($j->jam_mulai && $j->jam_selesai)
+                        {{ $j->jam_mulai }} - {{ $j->jam_selesai }}
                     @else
                         -
                     @endif

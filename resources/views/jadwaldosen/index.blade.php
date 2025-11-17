@@ -35,11 +35,7 @@
                                 <tr>
                                     <td>{{ $j->hari->nama_hari ?? '-' }}</td>
                                     <td>
-                                        @if ($j->jam)
-                                            {{ $j->jam->jam_mulai ?? '-' }} - {{ $j->jam->jam_selesai ?? '-' }}
-                                        @else
-                                            -
-                                        @endif
+                                        {{ $j->jam_mulai ?? '-' }} - {{ $j->jam_selesai ?? '-' }}
                                     </td>
                                     <td>
                                         {{ $j->pengampu->matakuliah->nama ?? '-' }}

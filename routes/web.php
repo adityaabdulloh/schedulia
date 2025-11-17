@@ -1,11 +1,9 @@
 <?php
 
-use App\Http\Controllers\AbsensiDosenController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DosenController;
-use App\Http\Controllers\DosenFeatureController;
 use App\Http\Controllers\JadwalDosenController;
 use App\Http\Controllers\JadwalKuliahController;
 use App\Http\Controllers\JadwalMahasiswaController;
@@ -20,6 +18,7 @@ use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\RuangController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DosenMahasiswaController;
 use App\Models\Mahasiswa;
 use Illuminate\Support\Facades\Route;
 
@@ -57,21 +56,19 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
     Route::get('dosen/profil/edit', [DosenController::class, 'editProfile'])->name('dosen.edit-profile');
     Route::put('dosen/profil', [DosenController::class, 'updateProfile'])->name('dosen.update-profile');
 
-    // New routes for DosenFeatureController
-    Route::get('dosen/mahasiswa/pengambilanmk', [DosenFeatureController::class, 'pengambilanMkDosen'])->name('dosen.mahasiswa.pengambilanmk');
-    Route::get('dosen/mahasiswa/absensi', [DosenFeatureController::class, 'absensiMahasiswa'])->name('dosen.mahasiswa.absensi');
-    Route::get('dosen/input-nilai', [DosenFeatureController::class, 'inputNilai'])->name('dosen.nilai.input');
-    Route::get('dosen/materi-kuliah', [DosenFeatureController::class, 'materiKuliah'])->name('dosen.materi.index');
     Route::get('pengumuman/create/{jadwalKuliah}', [PengumumanController::class, 'create'])->name('pengumuman.create');
     Route::post('pengumuman', [PengumumanController::class, 'store'])->name('pengumuman.store');
     Route::get('pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index');
     Route::get('pengumuman/{pengumuman}', [PengumumanController::class, 'show'])->name('pengumuman.show');
-    Route::get('dosen/pengambilan-mk', [DosenFeatureController::class, 'pengambilanMk'])->name('dosen.pengambilan-mk.index');
-    
-    // Routes for Absensi
-    Route::get('dosen/absensi', [AbsensiDosenController::class, 'index'])->name('dosen.absensi.index');
-    Route::get('dosen/absensi/{pengampu}', [AbsensiDosenController::class, 'show'])->name('dosen.absensi.show');
-    Route::post('dosen/absensi/{pengampu}', [AbsensiDosenController::class, 'store'])->name('dosen.absensi.store');
+
+    // Manajemen Mahasiswa for Dosen
+    Route::get('dosen/mahasiswa', [DosenMahasiswaController::class, 'index'])->name('dosen.mahasiswa.index');
+    Route::get('dosen/mahasiswa/{mahasiswa}/krs', [DosenMahasiswaController::class, 'showKrs'])->name('dosen.mahasiswa.krs');
+    Route::get('dosen/mahasiswa/{mahasiswa}/absensi', [DosenMahasiswaController::class, 'showAbsensi'])->name('dosen.mahasiswa.absensi');
+
+    Route::get('dosen/absensi', [DosenController::class, 'absensiIndex'])->name('dosen.absensi.index');
+    Route::get('dosen/absensi/{pengampu}/take', [DosenController::class, 'takeAbsensi'])->name('dosen.absensi.take');
+    Route::post('dosen/absensi/{pengampu}/store', [DosenController::class, 'storeAbsensi'])->name('dosen.absensi.store');
 });
 
 //     // Route untuk pengambilan MK oleh mahasiswa

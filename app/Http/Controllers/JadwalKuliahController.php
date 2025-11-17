@@ -46,7 +46,10 @@ class JadwalKuliahController extends Controller
 
     public function create()
     {
-        $pengampus = Pengampu::with(['matakuliah', 'dosen', 'kelas'])->get();
+        $existingPengampuIds = JadwalKuliah::pluck('pengampu_id')->unique();
+        $pengampus = Pengampu::with(['matakuliah', 'dosen', 'kelas'])
+            ->whereNotIn('id', $existingPengampuIds)
+            ->get();
         $ruangs = Ruang::all();
         $haris = Hari::all();
         

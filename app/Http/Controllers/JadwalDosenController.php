@@ -28,9 +28,7 @@ class JadwalDosenController extends Controller
                     $q->where('nama_hari', 'like', '%'.$search.'%');
                 })->orWhereHas('pengampu.matakuliah', function ($q) use ($search) {
                     $q->where('nama', 'like', '%'.$search.'%');
-                })->orWhereHas('jam', function ($q) use ($search) {
-                    $q->where('jam_mulai', 'like', '%'.$search.'%');
-                })->orWhereHas('ruang', function ($q) use ($search) {
+                })->orWhere('jam_mulai', 'like', '%'.$search.'%')->orWhereHas('ruang', function ($q) use ($search) {
                     $q->where('nama_ruang', 'like', '%'.$search.'%');
                 })->orWhereHas('kelas', function ($q) use ($search) {
                     $q->where('nama_kelas', 'like', '%'.$search.'%');
@@ -62,9 +60,7 @@ class JadwalDosenController extends Controller
                         $subq->where('nama_hari', 'like', '%'.$search.'%');
                     })->orWhereHas('pengampu.matakuliah', function ($subq) use ($search) {
                         $subq->where('nama', 'like', '%'.$search.'%');
-                    })->orWhereHas('jam', function ($subq) use ($search) {
-                        $subq->where('jam_mulai', 'like', '%'.$search.'%');
-                    })->orWhereHas('ruang', function ($subq) use ($search) {
+                    })->orWhere('jam_mulai', 'like', '%'.$search.'%')->orWhereHas('ruang', function ($subq) use ($search) {
                         $subq->where('nama_ruang', 'like', '%'.$search.'%');
                     })->orWhereHas('pengampu.kelas', function ($subq) use ($search) {
                         $subq->where('nama_kelas', 'like', '%'.$search.'%');

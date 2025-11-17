@@ -83,6 +83,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Prevent dropdowns in sidebar from closing prematurely due to sidebar toggle logic
+    document.querySelectorAll('.sidebar .dropdown-toggle[data-bs-toggle="collapse"]').forEach(function(element) {
+        element.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+    });
+
     // Logout Modal Logic
     const logoutButton = document.getElementById('logout-button');
     if(logoutButton) {

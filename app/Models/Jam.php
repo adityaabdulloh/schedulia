@@ -28,11 +28,6 @@ class Jam extends Model
         return $value ? Carbon::parse($value)->format('H:i') : null;
     }
 
-    public function jadwalKuliah()
-    {
-        return $this->hasMany(JadwalKuliah::class);
-    }
-
     // Tambahkan accessor untuk range waktu
     public function getRangeWaktuAttribute()
     {

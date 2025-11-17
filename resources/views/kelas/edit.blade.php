@@ -1,4 +1,3 @@
-<!-- resources/views/mata-kuliah/edit.blade.php -->
 @extends('layouts.app')
 
 @section('content')
@@ -36,9 +35,9 @@
 
                         <div class="mb-3">
                             <label for="nama_kelas" class="form-label">Nama Kelas</label>
-                            <input type="text" class="form-control @error('nama_kelas') is-invalid @enderror" 
-                                   id="nama_kelas" name="nama_kelas" 
-                                   value="{{ old('nama_kelas', $kelas->nama_kelas) }}" 
+                            <input type="text" class="form-control @error('nama_kelas') is-invalid @enderror"
+                                   id="nama_kelas" name="nama_kelas"
+                                   value="{{ old('nama_kelas', $kelas->nama_kelas) }}"
                                    placeholder="Masukkan nama kelas">
                             @error('nama_kelas')
                                 <div class="invalid-feedback">
@@ -49,12 +48,10 @@
 
                         <div class="mb-3">
                             <label for="prodi_id" class="form-label">Program Studi</label>
-                            <select class="form-select @error('prodi_id') is-invalid @enderror" 
-                                    id="prodi_id" name="prodi_id">
+                            <select class="form-select @error('prodi_id') is-invalid @enderror" id="prodi_id" name="prodi_id">
                                 <option value="">Pilih Program Studi</option>
                                 @foreach($prodi as $p)
-                                    <option value="{{ $p->id }}" 
-                                        {{ old('prodi_id', $kelas->prodi_id) == $p->id ? 'selected' : '' }}>
+                                    <option value="{{ $p->id }}" {{ old('prodi_id', $kelas->prodi_id) == $p->id ? 'selected' : '' }}>
                                         {{ $p->nama_prodi }}
                                     </option>
                                 @endforeach
@@ -83,30 +80,29 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.querySelector('form');
-        
+
         form.addEventListener('submit', function(e) {
             let isValid = true;
-            
+
             // Validasi nama_kelas
             const nama_kelas = document.getElementById('nama_kelas');
             if (!nama_kelas.value.trim()) {
-                setInvalid(nama_kelas, 'Nama kelas wajib diisi');
+                setInvalid(nama_kelas, 'Nama Kelas wajib diisi');
                 isValid = false;
             }
-            
-            
-            // Validasi Program Studi
-            const prodi = document.getElementById('prodi_id');
-            if (!prodi.value) {
-                setInvalid(prodi, 'Program studi wajib dipilih');
+
+            // Validasi prodi_id
+            const prodi_id = document.getElementById('prodi_id');
+            if (!prodi_id.value) {
+                setInvalid(prodi_id, 'Program Studi wajib dipilih');
                 isValid = false;
             }
-            
+
             if (!isValid) {
                 e.preventDefault();
             }
         });
-        
+
         function setInvalid(element, message) {
             element.classList.add('is-invalid');
             const feedback = element.nextElementSibling;
@@ -114,7 +110,7 @@
                 feedback.textContent = message;
             }
         }
-        
+
         // Reset validation on input
         const inputs = form.querySelectorAll('input, select');
         inputs.forEach(input => {

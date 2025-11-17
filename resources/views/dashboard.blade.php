@@ -1,85 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<style>
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
-    }
-    .welcome-banner {
-        background: linear-gradient(45deg, #4e73df, #7a9bff, #1cc88a, #36b9cc);
-        background-size: 400% 400%;
-        color: white;
-        padding: 2rem;
-        border-radius: 15px;
-        margin-bottom: 2rem;
-        animation: fadeInDown 1s ease-out, gradientBG 15s ease infinite;
-    }
 
-    .stat-card .card {
-        animation: fadeInUp 0.8s ease-out;
-        background-size: 400% 400%;
-        transition: all 0.3s ease;
-    }
-
-    .stat-card .card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 1.5rem 4rem rgba(0,0,0,.25)!important;
-    }
-
-    .quick-action-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        height: 100px;
-        border-radius: 10px;
-        background-color: #f8f9fc;
-        color: #5a5c69;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .quick-action-btn:hover {
-        background-color: #4e73df;
-        color: white;
-        transform: translateY(-5px);
-        box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15)!important;
-    }
-
-    .quick-action-btn i {
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
-    }
-
-    @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes gradientBG {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-</style>
 <div class="container-fluid">
     <!-- Welcome Banner -->
     <div class="welcome-banner">
@@ -160,7 +82,7 @@
         <div class="col-lg-6 mb-4">
             <div class="card shadow h-100">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Aksi Cepat</h6>
+                    <h6 class="m-0 font-weight-bold text-white">Aksi Cepat</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -196,7 +118,7 @@
         <div class="col-lg-6 mb-4">
             <div class="card shadow h-100">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Persetujuan KRS Tertunda</h6>
+                    <h6 class="m-0 font-weight-bold text-white">Persetujuan KRS Tertunda</h6>
                     <a href="{{ route('admin.pengambilanmk.validation.index') }}" class="btn btn-sm btn-primary">Lihat Semua</a>
                 </div>
                 <div class="card-body">
@@ -233,7 +155,7 @@
         <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Jumlah Mahasiswa per Program Studi</h6>
+                    <h6 class="m-0 font-weight-bold text-white">Jumlah Mahasiswa per Program Studi</h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-area">
@@ -246,7 +168,7 @@
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Distribusi Role User</h6>
+                    <h6 class="m-0 font-weight-bold text-white">Distribusi Role User</h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-pie pt-4">
@@ -259,6 +181,10 @@
 
 </div>
 @endsection
+
+@push('styles')
+@vite(['resources/css/custom-admin.scss'])
+@endpush
 
 @push('scripts')
 <script>
@@ -273,8 +199,8 @@
             datasets: [{
                 label: 'Jumlah Mahasiswa',
                 data: {!! json_encode($prodiMahasiswaCounts) !!},
-                backgroundColor: 'rgba(78, 115, 223, 0.8)',
-                borderColor: 'rgba(78, 115, 223, 1)',
+                backgroundColor: ['rgba(78, 115, 223, 0.8)'],
+                borderColor: ['rgba(78, 115, 223, 1)'],
                 borderWidth: 1
             }]
         },

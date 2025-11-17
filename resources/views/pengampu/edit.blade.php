@@ -35,7 +35,7 @@
 
                         <div class="mb-3">
                             <label>Dosen 1</label>
-                            <select name="dosen1" id="dosen1_select" class="form-control @error('dosen1') is-invalid @enderror">
+                            <select name="dosen1" id="dosen1_select" class="form-control @error('dosen1') is-invalid @enderror" disabled>
                                 <option value="">Pilih Dosen 1</option>
                                 @foreach($dosens as $dosen)
                                     <option value="{{ $dosen->id }}" 
@@ -51,7 +51,7 @@
 
                         <div class="mb-3">
                             <label>Dosen 2 (Opsional)</label>
-                            <select name="dosen2" id="dosen2_select" class="form-control @error('dosen2') is-invalid @enderror">
+                            <select name="dosen2" id="dosen2_select" class="form-control @error('dosen2') is-invalid @enderror" disabled>
                                 <option value="">Pilih Dosen 2</option>
                                 @foreach($dosens as $dosen)
                                     <option value="{{ $dosen->id }}"
@@ -92,7 +92,7 @@
                                 @foreach($kelas as $k)
                                     <option value="{{ $k->id }}" 
                                         {{ $pengampu->kelas_id == $k->id ? 'selected' : '' }}>
-                                        {{ $k->nama }}
+                                        {{ $k->nama_kelas }}
                                     </option>
                                 @endforeach
                             </select>
@@ -103,7 +103,7 @@
 
                         <div class="mb-3">
                             <label>Program Studi</label>
-                            <select name="prodi_id" id="prodi_select" class="form-control @error('prodi_id') is-invalid @enderror" readonly>
+                            <select name="prodi_id" id="prodi_select" class="form-control @error('prodi_id') is-invalid @enderror">
                                 <option value="">Pilih Program Studi</option>
                                 @foreach($prodis as $prodi)
                                     <option value="{{ $prodi->id }}"
@@ -120,7 +120,7 @@
                         <div class="mb-3">
                             <label>Tahun Akademik</label>
                             <input type="text" name="tahun_akademik" class="form-control @error('tahun_akademik') is-invalid @enderror" 
-                                   value="{{ $pengampu->tahun_akademik }}">
+                                   value="{{ $pengampu->tahun_akademik }}" readonly>
                             @error('tahun_akademik')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
@@ -137,40 +137,4 @@
         </div>
     </div>
 </div>
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const dosenSelect = document.getElementById('dosen1_select');
-        const prodiSelect = document.getElementById('prodi_select');
-        const dosensData = @json($dosens); // Pass dosens data from PHP to JavaScript
-
-        function updateProdiField() {
-            const selectedDosenId = dosenSelect.value;
-            if (selectedDosenId) {
-                const selectedDosen = dosensData.find(dosen => dosen.id == selectedDosenId);
-                if (selectedDosen && selectedDosen.prodi) {
-                    prodiSelect.value = selectedDosen.prodi.id;
-                    prodiSelect.setAttribute('readonly', 'readonly');
-                    prodiSelect.style.backgroundColor = '#e9ecef'; // Grey out the field
-                } else {
-                    // If selected dosen has no prodi or prodi data is missing
-                    prodiSelect.value = '';
-                    prodiSelect.removeAttribute('readonly');
-                    prodiSelect.style.backgroundColor = '';
-                }
-            } else {
-                // If "Pilih Dosen 1" is selected
-                prodiSelect.value = '';
-                prodiSelect.removeAttribute('readonly');
-                prodiSelect.style.backgroundColor = '';
-            }
-        }
-
-        // Initial update in case a dosen is pre-selected (e.g., for editing existing data)
-        updateProdiField();
-
-        dosenSelect.addEventListener('change', updateProdiField);
-    });
-</script>
-@endpush
 @endsection

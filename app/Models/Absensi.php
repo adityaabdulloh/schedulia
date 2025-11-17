@@ -12,9 +12,22 @@ class Absensi extends Model
     protected $table = 'absensi';
 
     protected $fillable = [
-        'pengampu_id',
         'mahasiswa_id',
-        'pertemuan',
+        'jadwal_kuliah_id',
+        'tanggal',
         'status',
+        'waktu_absen',
+        'pengampu_id', // Added pengampu_id
+        'pertemuan',   // Added pertemuan
     ];
+
+    public function jadwalKuliah()
+    {
+        return $this->belongsTo(JadwalKuliah::class);
+    }
+
+    public function mahasiswa()
+    {
+        return $this->belongsTo(Mahasiswa::class);
+    }
 }

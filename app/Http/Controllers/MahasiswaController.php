@@ -81,11 +81,12 @@ class MahasiswaController extends Controller
         if ($hari && ! empty($approvedMatakuliahIds)) {
             $jadwalHariIni = JadwalKuliah::where('kelas_id', $mahasiswa->kelas_id)
                 ->where('hari_id', $hari->id)
+                ->whereNotNull('jam_mulai') // Pastikan hanya jadwal yang punya jam
                 ->whereHas('pengampu', function ($query) use ($approvedMatakuliahIds) {
                     $query->whereIn('matakuliah_id', $approvedMatakuliahIds);
                 })
-                ->with(['pengampu.matakuliah', 'pengampu.dosen', 'jam', 'ruang'])
-                ->orderBy('jam_id', 'asc')
+                ->with(['pengampu.matakuliah', 'pengampu.dosen', 'ruang'])
+                ->orderBy('jam_mulai', 'asc')
                 ->get();
         }
 
@@ -98,7 +99,23 @@ class MahasiswaController extends Controller
             ->take(5)
             ->get();
 
-        return view('dashboard-mahasiswa', compact('mahasiswa', 'jadwalHariIni', 'pengumuman'));
+        // Ambil jadwal untuk seminggu (Senin-Jumat)
+        $jadwalSeminggu = collect();
+        if (!empty($approvedMatakuliahIds)) {
+            $jadwalSeminggu = JadwalKuliah::where('kelas_id', $mahasiswa->kelas_id)
+                ->whereNotNull('jam_mulai')
+                ->whereHas('pengampu', function ($query) use ($approvedMatakuliahIds) {
+                    $query->whereIn('matakuliah_id', $approvedMatakuliahIds);
+                })
+                ->with(['hari', 'pengampu.matakuliah', 'pengampu.dosen', 'ruang'])
+                ->orderBy('hari_id', 'asc')
+                ->orderBy('jam_mulai', 'asc')
+                ->get()
+                ->groupBy('hari.nama_hari'); // Group by day name
+        }
+
+
+        return view('dashboard-mahasiswa', compact('mahasiswa', 'jadwalHariIni', 'pengumuman', 'jadwalSeminggu'));
     }
 
     // Menampilkan form untuk menambah mahasiswa

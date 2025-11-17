@@ -1,4 +1,3 @@
-<!-- resources/views/mata-kuliah/create.blade.php -->
 @extends('layouts.app')
 
 @section('content')
@@ -32,11 +31,10 @@
 
                     <form action="{{ route('kelas.store') }}" method="POST">
                         @csrf
-
                         <div class="mb-3">
                             <label for="nama_kelas" class="form-label">Nama Kelas</label>
-                            <input type="text" class="form-control @error('nama_kelas') is-invalid @enderror" 
-                                   id="nama_kelas" name="nama_kelas" value="{{ old('nama_kelas') }}" 
+                            <input type="text" class="form-control @error('nama_kelas') is-invalid @enderror"
+                                   id="nama_kelas" name="nama_kelas" value="{{ old('nama_kelas') }}"
                                    placeholder="Masukkan nama kelas">
                             @error('nama_kelas')
                                 <div class="invalid-feedback">
@@ -47,8 +45,7 @@
 
                         <div class="mb-3">
                             <label for="prodi_id" class="form-label">Program Studi</label>
-                            <select class="form-select @error('prodi_id') is-invalid @enderror" 
-                                    id="prodi_id" name="prodi_id">
+                            <select class="form-select @error('prodi_id') is-invalid @enderror" id="prodi_id" name="prodi_id">
                                 <option value="">Pilih Program Studi</option>
                                 @foreach($prodi as $p)
                                     <option value="{{ $p->id }}" {{ old('prodi_id') == $p->id ? 'selected' : '' }}>

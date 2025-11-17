@@ -1,0 +1,58 @@
+/* resources/css/jadwal.scss */
+
+.card-header {
+    background-color: #6c757d; /* Darker shade for header */
+    color: white;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.table-header-custom {
+    background-color: #343a40; /* Dark background for table headers */
+    color: white;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8f9fa; /* Light gray for odd rows */
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: #e9ecef; /* Slightly darker gray for even rows */
+}
+
+.table-hover tbody tr:hover {
+    background-color: #cce5ff; /* Light blue on hover */
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529; /* Dark text for warning button */
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+/* Custom styles for action buttons */
+.btn-action-edit {
+    background-color: #17a2b8; /* Info blue */
+    border-color: #17a2b8;
+    color: white;
+}
+
+.btn-action-delete {
+    background-color: #dc3545; /* Danger red */
+    border-color: #dc3545;
+    color: white;
+}

@@ -13,9 +13,27 @@ class MatakuliahController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $mataKuliah = Matakuliah::with('prodi')->whereRaw('LOWER(nama) LIKE ?', ['%' . strtolower($search) . '%'])->paginate(10);
+        $prodiFilter = $request->input('prodi_id');
+        $semesterFilter = $request->input('semester');
 
-        return view('matakuliah.index', compact('mataKuliah'));
+        $query = Matakuliah::with('prodi');
+
+        if ($search) {
+            $query->whereRaw('LOWER(nama) LIKE ?', ['%' . strtolower($search) . '%']);
+        }
+
+        if ($prodiFilter) {
+            $query->where('prodi_id', $prodiFilter);
+        }
+
+        if ($semesterFilter) {
+            $query->where('semester', $semesterFilter);
+        }
+
+        $mataKuliah = $query->paginate(10);
+        $prodi = Prodi::all(); // Fetch all Prodi for the filter dropdown
+
+        return view('matakuliah.index', compact('mataKuliah', 'prodi', 'prodiFilter', 'semesterFilter'));
     }
 
     // Menampilkan form untuk menambah matakuliah

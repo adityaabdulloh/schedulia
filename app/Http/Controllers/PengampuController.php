@@ -119,6 +119,7 @@ class PengampuController extends Controller
 
     public function edit(Pengampu $pengampu)
     {
+        $pengampu->load('dosen'); // Eager-load the 'dosen' relationship
         $dosens = Dosen::with('prodi')->get();
         $matakuliahs = Matakuliah::all();
         $kelas = Kelas::all();

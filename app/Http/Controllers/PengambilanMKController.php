@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kelas;
 use App\Models\Mahasiswa;
 use App\Models\Matakuliah;
 use App\Models\Pengampu;
 use App\Models\PengambilanMK; // Add this line
+use App\Models\Prodi;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,10 +26,18 @@ class PengambilanMKController extends Controller
 
     public function indexForStudent()
     {
-        $mahasiswa = Auth::user()->mahasiswa;
-        $pengambilanMKs = PengambilanMK::where('mahasiswa_id', $mahasiswa->id)->with('matakuliah')->get();
+        $mahasiswa = Auth::user()->mahasiswa->load('prodi', 'kelas');
+        // dd($mahasiswa->toArray()); // Temporarily added for debugging
+        $pengambilanMKs = PengambilanMK::where('mahasiswa_id', $mahasiswa->id)
+            ->with(['matakuliah', 'pengampu.dosen', 'pengampu.kelas'])
+            ->get()
+            ->groupBy('matakuliah.semester'); // Group by semester
 
-        return view('pengambilanmk.krs', compact('pengambilanMKs'));
+        $totalSks = $pengambilanMKs->flatten()->sum(function ($pengambilan) {
+            return $pengambilan->matakuliah->sks;
+        });
+
+        return view('pengambilanmk.krs', compact('mahasiswa', 'pengambilanMKs', 'totalSks'));
     }
 
     public function createForStudent()
@@ -55,7 +65,10 @@ class PengambilanMKController extends Controller
         // Namun, jika view masih menggunakannya untuk menampilkan status "sudah diambil" untuk pending, kita bisa biarkan.
         $diambilPengampuIds = PengambilanMK::where('mahasiswa_id', $mahasiswa->id)->pluck('pengampu_id')->toArray();
 
-        return view('pengambilanmk.create', compact('pengampuTersedia', 'diambilPengampuIds'));
+        $prodis = Prodi::all();
+        $kelass = Kelas::all();
+
+        return view('pengambilanmk.create', compact('pengampuTersedia', 'diambilPengampuIds', 'prodis', 'kelass'));
     }
 
     public function storeForStudent(Request $request)

@@ -29,13 +29,13 @@
                 </div>
                 <ul class="jadwal-list">
                     @forelse($jadwalHariIni as $jadwal)
-                        <li class="jadwal-item" data-start="{{ $jadwal->jam->jam_mulai }}" data-end="{{ $jadwal->jam->jam_selesai }}">
+                        <li class="jadwal-item" data-start="{{ $jadwal->jam_mulai }}" data-end="{{ $jadwal->jam_selesai }}">
                             <div class="jadwal-info">
                                 <div class="jadwal-matkul">{{ $jadwal->pengampu->matakuliah->nama }}</div>
                                 <small class="text-muted">{{ optional($jadwal->pengampu->dosen->first())->nama ?? 'Dosen belum ditentukan' }}</small>
                             </div>
                             <div class="text-right">
-                                <div class="jadwal-time">{{ date('H:i', strtotime($jadwal->jam->jam_mulai)) }} - {{ date('H:i', strtotime($jadwal->jam->jam_selesai)) }}</div>
+                                <div class="jadwal-time">{{ $jadwal->jam_mulai }} - {{ $jadwal->jam_selesai }}</div>
                                 <div class="jadwal-room"><i class="fas fa-map-marker-alt fa-fw"></i>{{ $jadwal->ruang->nama_ruang }}</div>
                             </div>
                         </li>
@@ -72,7 +72,7 @@
                                             <small class="text-muted">{{ optional($jadwal->pengampu->dosen->first())->nama ?? 'Dosen belum ditentukan' }}</small>
                                         </div>
                                         <div class="text-right">
-                                            <div class="jadwal-time">{{ date('H:i', strtotime($jadwal->jam->jam_mulai)) }} - {{ date('H:i', strtotime($jadwal->jam->jam_selesai)) }}</div>
+                                            <div class="jadwal-time">{{ $jadwal->jam_mulai }} - {{ $jadwal->jam_selesai }}</div>
                                             <div class="jadwal-room"><i class="fas fa-map-marker-alt fa-fw"></i>{{ $jadwal->ruang->nama_ruang }}</div>
                                         </div>
                                     </li>
@@ -153,59 +153,7 @@
 @endsection
 
 @push('styles')
-<style>
-.digital-clock-widget-top {
-    background-color: #4e73df; /* Warna primer tema */
-    color: #ffffff;
-    text-align: center;
-    padding: 5px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-#digital-clock-top {
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-}
-
-#digital-date-top {
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-}
-
-.welcome-message-box {
-    display: flex;
-    align-items: center;
-    background: linear-gradient(90deg, #4e73df 0%, #224abe 100%);
-    color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-
-.welcome-message-box .icon {
-    font-size: 2.5rem;
-    margin-right: 20px;
-    animation: spin 4s linear infinite;
-}
-
-.welcome-message-box .text h4 {
-    margin: 0;
-    font-weight: 700;
-    font-size: 1.5rem;
-}
-
-.welcome-message-box .text p {
-    margin: 0;
-    font-size: 1rem;
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-</style>
+@vite(['resources/css/mahasiswa-dashboard.scss'])
 @endpush
 
 @push('scripts')

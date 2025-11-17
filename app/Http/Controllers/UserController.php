@@ -15,11 +15,37 @@ class UserController extends Controller
     /**
      * Tampilkan daftar pengguna.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all(); // Mengambil semua data pengguna
+        $query = User::query();
 
-        return view('users.index', compact('users')); // Tampilkan di view users.index
+        if ($request->has('search') && !empty($request->search)) {
+            $search = strtolower($request->search);
+            $query->where(function ($q) use ($search) {
+                $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+                  ->orWhereRaw('LOWER(email) LIKE ?', ["%{$search}%"])
+                  ->orWhereHas('mahasiswa', function ($q2) use ($search) {
+                      $q2->whereRaw('LOWER(nim) LIKE ?', ["%{$search}%"])
+                         ->orWhereHas('prodi', function ($q3) use ($search) {
+                             $q3->whereRaw('LOWER(nama_prodi) LIKE ?', ["%{$search}%"]);
+                         })
+                         ->orWhereHas('kelas', function ($q3) use ($search) {
+                             $q3->whereRaw('LOWER(nama_kelas) LIKE ?', ["%{$search}%"]);
+                         })
+                         ->orWhereRaw('CAST(semester AS TEXT) LIKE ?', ["%{$search}%"]);
+                  })
+                  ->orWhereHas('dosen', function ($q2) use ($search) {
+                      $q2->whereRaw('LOWER(nip) LIKE ?', ["%{$search}%"])
+                         ->orWhereHas('prodi', function ($q3) use ($search) {
+                             $q3->whereRaw('LOWER(nama_prodi) LIKE ?', ["%{$search}%"]);
+                         });
+                  });
+            });
+        }
+
+        $users = $query->with(['mahasiswa.prodi', 'mahasiswa.kelas', 'dosen.prodi'])->paginate(10);
+
+        return view('users.index', compact('users'));
     }
 
     /**
