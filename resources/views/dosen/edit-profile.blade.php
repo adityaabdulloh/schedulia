@@ -5,8 +5,8 @@
     <h1 class="h3 mb-4 text-gray-800">Edit Profil Dosen</h1>
 
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Informasi Profil</h6>
+        <div class="card-header bg-primary text-white py-3">
+            <h6 class="m-0 font-weight-bold text-white">Informasi Profil</h6>
         </div>
         <div class="card-body">
             <form action="{{ route('dosen.update-profile') }}" method="POST" enctype="multipart/form-data">

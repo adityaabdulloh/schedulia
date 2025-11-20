@@ -16,7 +16,7 @@
                             <strong><i class="bi bi-book-fill"></i> Mata Kuliah:</strong> {{ $jadwalKuliah->pengampu->matakuliah->nama }}<br>
                             <strong><i class="bi bi-people-fill"></i> Kelas:</strong> {{ $jadwalKuliah->pengampu->kelas->nama_kelas }}<br>
                             <strong><i class="bi bi-calendar-day-fill"></i> Hari:</strong> {{ $jadwalKuliah->hari->nama_hari }}<br>
-                            <strong><i class="bi bi-clock-fill"></i> Jam:</strong> {{ $jadwalKuliah->jam->jam_mulai }} - {{ $jadwalKuliah->jam->jam_selesai }}<br>
+                            <strong><i class="bi bi-clock-fill"></i> Jam:</strong> {{ $jadwalKuliah->jam_mulai }} - {{ $jadwalKuliah->jam_selesai }}<br>
                             <strong><i class="bi bi-geo-alt-fill"></i> Ruang:</strong> {{ $jadwalKuliah->ruang->nama_ruang }}
                         </p>
                     </div>

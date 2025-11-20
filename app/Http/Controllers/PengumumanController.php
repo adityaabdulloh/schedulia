@@ -21,7 +21,7 @@ class PengumumanController extends Controller
 
     public function show(Pengumuman $pengumuman)
     {
-        $pengumuman->load('jadwalKuliah.pengampu.matakuliah', 'jadwalKuliah.pengampu.kelas', 'jadwalKuliah.hari', 'jadwalKuliah.jam', 'jadwalKuliah.ruang', 'dosen');
+        $pengumuman->load('jadwalKuliah.pengampu.matakuliah', 'jadwalKuliah.pengampu.kelas', 'jadwalKuliah.hari', 'jadwalKuliah.ruang', 'dosen');
 
         return view('pengumuman.show', compact('pengumuman'));
     }
@@ -31,7 +31,7 @@ class PengumumanController extends Controller
     public function create(JadwalKuliah $jadwalKuliah)
     {
         // Eager load relationships for display
-        $jadwalKuliah->load('pengampu.matakuliah', 'pengampu.dosen', 'pengampu.kelas', 'hari', 'jam', 'ruang');
+        $jadwalKuliah->load('pengampu.matakuliah', 'pengampu.dosen', 'pengampu.kelas', 'hari', 'ruang');
 
         return view('pengumuman.create', compact('jadwalKuliah'));
     }

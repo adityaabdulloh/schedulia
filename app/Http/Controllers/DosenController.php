@@ -373,19 +373,29 @@ class DosenController extends Controller
 
         $selectedPertemuan = $request->input('pertemuan');
         $selectedJadwalKuliahId = $request->input('jadwal_kuliah_id');
+        $currentDate = Carbon::today();
+
+        // Check if attendance for this meeting (pertemuan) and jadwal_kuliah_id has already been taken
+        $existingAbsensi = Absensi::where('pengampu_id', $pengampu->id)
+            ->where('jadwal_kuliah_id', $selectedJadwalKuliahId)
+            ->where('pertemuan', $selectedPertemuan)
+            ->where('tanggal', $currentDate)
+            ->exists();
+
+        if ($existingAbsensi) {
+            return redirect()->back()->with('error', 'Absensi untuk pertemuan ini sudah diambil.');
+        }
 
         $jadwalKuliah = JadwalKuliah::findOrFail($selectedJadwalKuliahId);
 
         foreach ($request->input('absensi') as $mahasiswaId => $status) {
-            Absensi::updateOrCreate(
+            Absensi::create(
                 [
                     'mahasiswa_id' => $mahasiswaId,
                     'jadwal_kuliah_id' => $jadwalKuliah->id,
-                    'tanggal' => Carbon::today(), // Always record for today's date
+                    'tanggal' => $currentDate,
                     'pengampu_id' => $pengampu->id,
                     'pertemuan' => $selectedPertemuan,
-                ],
-                [
                     'status' => $status,
                     'waktu_absen' => Carbon::now(),
                 ]

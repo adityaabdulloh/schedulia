@@ -45,6 +45,8 @@ class PengampuController extends Controller
                     $q2->whereRaw('LOWER(nama) LIKE ?', ["%{$search}%"]);
                 })->orWhereHas('Kelas', function ($q2) use ($search) {
                     $q2->whereRaw('LOWER(nama_kelas) LIKE ?', ["%{$search}%"]);
+                })->orWhereHas('dosen', function ($q2) use ($search) {
+                    $q2->whereRaw('LOWER(nama) LIKE ?', ["%{$search}%"]);
                 })->orWhereRaw('LOWER(tahun_akademik) LIKE ?', ["%{$search}%"]);
             });
         }

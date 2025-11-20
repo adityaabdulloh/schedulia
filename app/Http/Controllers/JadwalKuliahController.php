@@ -69,7 +69,7 @@ class JadwalKuliahController extends Controller
             'hari_id' => 'required|exists:hari,id',
             'tahun_akademik' => 'required|string',
             'metode_penjadwalan' => 'required|in:otomatis,manual',
-            'jam_mulai_manual' => 'required_if:metode_penjadwalan,manual|date_format:H:i',
+            'jam_mulai_manual' => 'exclude_if:metode_penjadwalan,otomatis|required|date_format:H:i',
         ]);
 
         $pengampu = Pengampu::with(['matakuliah', 'dosen'])->findOrFail($request->pengampu_id);

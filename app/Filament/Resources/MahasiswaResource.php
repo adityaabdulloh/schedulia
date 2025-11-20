@@ -17,6 +17,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -95,7 +96,10 @@ class MahasiswaResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('prodi_id')
+                    ->label('Prodi')
+                    ->options(Prodi::all()->pluck('nama_prodi', 'id'))
+                    ->searchable()
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -33,7 +33,7 @@
                     <p>
                         <strong>Kelas:</strong> {{ $pengumuman->jadwalKuliah->pengampu->kelas->nama_kelas ?? '-' }}<br>
                         <strong>Hari:</strong> {{ $pengumuman->jadwalKuliah->hari->nama_hari ?? '-' }}<br>
-                        <strong>Jam:</strong> {{ $pengumuman->jadwalKuliah->jam->jam_mulai ?? '-' }} - {{ $pengumuman->jadwalKuliah->jam->jam_selesai ?? '-' }}<br>
+                        <strong>Jam:</strong> {{ $pengumuman->jadwalKuliah->jam_mulai ?? '-' }} - {{ $pengumuman->jadwalKuliah->jam_selesai ?? '-' }}<br>
                         <strong>Ruang:</strong> {{ $pengumuman->jadwalKuliah->ruang->nama_ruang ?? '-' }}
                     </p>
 

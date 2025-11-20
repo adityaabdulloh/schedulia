@@ -12,6 +12,7 @@ window.DataTable = DataTable;
 
 window.Swal = Swal;
 window.Chart = Chart;
+window.bootstrap = bootstrap;
 
 document.addEventListener('DOMContentLoaded', function () {
     const sidebarToggle = document.getElementById('sidebar-toggle');
