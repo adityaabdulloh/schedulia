@@ -67,13 +67,7 @@
 
                         <div class="mb-3">
                             <label for="jam_mulai" class="form-label">Jam Mulai</label>
-                            <select name="jam_mulai" id="jam_mulai" class="form-select" required>
-                                @foreach($jam as $item)
-                                    <option value="{{ $item->jam_mulai }}" {{ $item->jam_mulai == $jadwal->jam_mulai ? 'selected' : '' }}>
-                                        {{ \Carbon\Carbon::parse($item->jam_mulai)->format('H:i') }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <input type="time" name="jam_mulai" id="jam_mulai" class="form-control" value="{{ old('jam_mulai', \Carbon\Carbon::parse($jadwal->jam_mulai)->format('H:i')) }}" required>
                         </div>
 
                         <div class="mb-3">

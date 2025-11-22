@@ -191,7 +191,7 @@ class JadwalKuliahController extends Controller
             'pengampu_id' => 'required',
             'ruang_id' => 'required',
             'hari_id' => 'required',
-            'jam_mulai' => 'required',
+            'jam_mulai' => 'required|date_format:H:i',
             'tahun_akademik' => 'required',
         ]);
 

@@ -16,7 +16,7 @@ class LoginController extends Controller
         ]);
 
         // Autentikasi
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
             // Redirect berdasarkan role

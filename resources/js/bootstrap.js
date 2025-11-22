@@ -22,17 +22,11 @@ window.Pusher = Pusher;
 
 window.Pusher.logToConsole = true;
 
-console.log('Pusher App Key:', import.meta.env.VITE_PUSHER_APP_KEY);
-console.log('Pusher App Cluster:', import.meta.env.VITE_PUSHER_APP_CLUSTER);
-
 window.Echo = new Echo({
     broadcaster: 'pusher',
     key: import.meta.env.VITE_PUSHER_APP_KEY,
     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
     forceTLS: true
 });
-
-console.log('window.Echo object:', window.Echo);
-console.log('window.Pusher object:', window.Pusher);
 
 

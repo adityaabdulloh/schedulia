@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Mahasiswa;
 use App\Models\PengambilanMK;
 use App\Models\Absensi;
-use App\Models\Dosen; // Import Dosen model
-use App\Models\Pengampu; // Import Pengampu model
+use App\Models\Dosen;
+use App\Models\Pengampu;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // Import Auth facade
+use Illuminate\Support\Facades\Auth;
 
 class DosenMahasiswaController extends Controller
 {
@@ -24,8 +24,9 @@ class DosenMahasiswaController extends Controller
         // Get all pengampu records for the logged-in dosen
         $pengampuIds = $dosen->pengampus->pluck('id');
 
-        // Get all unique mahasiswa_id from PengambilanMK based on pengampu_id
+        // Get all unique mahasiswa_id from PengambilanMK based on pengampu_id and status 'diterima'
         $mahasiswaIds = PengambilanMK::whereIn('pengampu_id', $pengampuIds)
+            ->where('status', 'approved')
             ->distinct()
             ->pluck('mahasiswa_id');
 
@@ -37,7 +38,7 @@ class DosenMahasiswaController extends Controller
                 return $pengampu->matakuliah;
             })
             ->unique('id')
-            ->values(); // Re-index the collection
+            ->values();
 
         // Get the Mahasiswa data
         $mahasiswa = Mahasiswa::whereIn('id', $mahasiswaIds)
@@ -47,7 +48,8 @@ class DosenMahasiswaController extends Controller
         if ($request->has('matakuliah_id') && $request->matakuliah_id != '') {
             $matakuliahId = $request->matakuliah_id;
             $mahasiswa->whereHas('pengambilanMk', function ($query) use ($matakuliahId, $pengampuIds) {
-                $query->whereIn('pengampu_id', $pengampuIds) // Ensure it's from this dosen's pengampu
+                $query->where('status', 'approved')
+                      ->whereIn('pengampu_id', $pengampuIds)
                       ->whereHas('pengampu', function ($q) use ($matakuliahId) {
                           $q->where('matakuliah_id', $matakuliahId);
                       });
@@ -55,8 +57,6 @@ class DosenMahasiswaController extends Controller
         }
 
         $mahasiswa = $mahasiswa->get();
-
-        //         dd($mataKuliahDosen); // Temporarily added for debugging // Temporarily added for debugging
 
         return view('dosen.mahasiswa.index', compact('mahasiswa', 'mataKuliahDosen'));
     }

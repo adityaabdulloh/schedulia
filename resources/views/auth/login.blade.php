@@ -44,15 +44,7 @@
                 @enderror
             </div>
 
-            <div class="form-actions">
-                <label>
-                    <input type="checkbox" name="remember" class="mr-2">
-                    Ingat Saya
-                </label>
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}">Lupa Password?</a>
-                @endif
-            </div>
+            
 
             <button type="submit" class="submit-button w-100">
                 Masuk Sistem

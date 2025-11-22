@@ -35,7 +35,7 @@
 
                         <div class="mb-3">
                             <label>Dosen 1</label>
-                            <select name="dosen1" id="dosen1_select" class="form-control @error('dosen1') is-invalid @enderror" disabled>
+                            <select name="dosen1" id="dosen1_select" class="form-control @error('dosen1') is-invalid @enderror">
                                 <option value="">Pilih Dosen 1</option>
                                 @foreach($dosens as $dosen)
                                     <option value="{{ $dosen->id }}" 
@@ -51,7 +51,7 @@
 
                         <div class="mb-3">
                             <label>Dosen 2 (Opsional)</label>
-                            <select name="dosen2" id="dosen2_select" class="form-control @error('dosen2') is-invalid @enderror" disabled>
+                            <select name="dosen2" id="dosen2_select" class="form-control @error('dosen2') is-invalid @enderror">
                                 <option value="">Pilih Dosen 2</option>
                                 @foreach($dosens as $dosen)
                                     <option value="{{ $dosen->id }}"
@@ -120,7 +120,7 @@
                         <div class="mb-3">
                             <label>Tahun Akademik</label>
                             <input type="text" name="tahun_akademik" class="form-control @error('tahun_akademik') is-invalid @enderror" 
-                                   value="{{ $pengampu->tahun_akademik }}" readonly>
+                                   value="{{ $pengampu->tahun_akademik }}">
                             @error('tahun_akademik')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
@@ -138,3 +138,56 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const dosen1Select = document.getElementById('dosen1_select');
+        const dosen2Select = document.getElementById('dosen2_select');
+
+        function updateDosenOptions() {
+            const selectedDosen1 = dosen1Select.value;
+            const selectedDosen2 = dosen2Select.value;
+
+            // Enable all options first
+            for (let option of dosen1Select.options) {
+                option.disabled = false;
+            }
+            for (let option of dosen2Select.options) {
+                option.disabled = false;
+            }
+
+            // Disable selected option in the other dropdown
+            if (selectedDosen1) {
+                const optionInDosen2 = dosen2Select.querySelector(`option[value="${selectedDosen1}"]`);
+                if (optionInDosen2) {
+                    optionInDosen2.disabled = true;
+                }
+            }
+
+            if (selectedDosen2) {
+                const optionInDosen1 = dosen1Select.querySelector(`option[value="${selectedDosen2}"]`);
+                if (optionInDosen1) {
+                    optionInDosen1.disabled = true;
+                }
+            }
+        }
+
+        dosen1Select.addEventListener('change', function() {
+            if (this.value === dosen2Select.value) {
+                dosen2Select.value = "";
+            }
+            updateDosenOptions();
+        });
+
+        dosen2Select.addEventListener('change', function() {
+            if (this.value === dosen1Select.value) {
+                dosen1Select.value = "";
+            }
+            updateDosenOptions();
+        });
+
+        // Initial update on page load
+        updateDosenOptions();
+    });
+</script>
+@endpush

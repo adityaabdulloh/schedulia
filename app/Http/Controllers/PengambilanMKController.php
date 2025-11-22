@@ -78,7 +78,21 @@ class PengambilanMKController extends Controller
         ]);
 
         $mahasiswa = Auth::user()->mahasiswa;
-        $pengampu = Pengampu::find($request->pengampu_id);
+        $pengampu = Pengampu::with('matakuliah')->find($request->pengampu_id);
+
+        // Hitung total SKS yang sudah diambil (pending atau approved)
+        $totalSks = PengambilanMK::where('mahasiswa_id', $mahasiswa->id)
+            ->whereIn('status', ['pending', 'approved'])
+            ->with('matakuliah')
+            ->get()
+            ->sum(function ($pengambilan) {
+                return $pengambilan->matakuliah->sks;
+            });
+
+        // Cek jika penambahan SKS baru akan melebihi 24
+        if ($totalSks + $pengampu->matakuliah->sks > 24) {
+            return redirect()->route('pengambilan-mk.create')->with('error', 'SKS melebihi batas maksimum (24 SKS).');
+        }
 
         // Cek apakah sudah diambil
         $isExist = PengambilanMK::where('mahasiswa_id', $mahasiswa->id)

@@ -37,7 +37,12 @@
 
                         <div class="form-group mb-3">
                             <label for="pesan" class="form-label"><strong>Pesan</strong></label>
-                            <textarea class="form-control" id="pesan" name="pesan" rows="4" required placeholder="Contoh: Kelas hari ini dibatalkan karena ada rapat mendadak."></textarea>
+                            <textarea class="form-control @error('pesan') is-invalid @enderror" id="pesan" name="pesan" rows="4" placeholder="Contoh: Kelas hari ini dibatalkan karena ada rapat mendadak."></textarea>
+                            @error('pesan')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
 
                         <div class="d-flex justify-content-end">

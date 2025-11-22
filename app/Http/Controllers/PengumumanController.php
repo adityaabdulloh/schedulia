@@ -10,12 +10,22 @@ use Illuminate\Support\Facades\Auth;
 
 class PengumumanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pengumumans = Pengumuman::with('jadwalKuliah.pengampu.matakuliah', 'dosen')
-            ->where('dosen_id', Auth::user()->dosen->id)
-            ->latest()
-            ->paginate(10);
+        $query = Pengumuman::with('jadwalKuliah.pengampu.matakuliah', 'dosen')
+            ->where('dosen_id', Auth::user()->dosen->id);
+
+        if ($request->has('matakuliah') && $request->matakuliah != '') {
+            $query->whereHas('jadwalKuliah.pengampu.matakuliah', function ($q) use ($request) {
+                $q->where('nama', 'like', '%' . $request->matakuliah . '%');
+            });
+        }
+
+        if ($request->has('tipe') && $request->tipe != '') {
+            $query->where('tipe', $request->tipe);
+        }
+
+        $pengumumans = $query->latest()->paginate(10);
 
         return view('pengumuman.index', compact('pengumumans'));
     }
@@ -46,6 +56,8 @@ class PengumumanController extends Controller
             'jadwal_kuliah_id' => 'required|exists:jadwal_kuliah,id',
             'tipe' => 'required|in:perubahan,pembatalan,informasi',
             'pesan' => 'required|string|max:1000',
+        ], [
+            'pesan.required' => 'bidang ini tidak boleh kosong',
         ]);
 
         // Get the authenticated user's related Dosen model

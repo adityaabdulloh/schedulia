@@ -89,6 +89,8 @@ class PengampuController extends Controller
             'kelas_id' => 'required|exists:kelas,id',
             'tahun_akademik' => 'required',
             'prodi_id' => 'required|exists:prodi,id',
+        ], [
+            'dosen2.different' => 'Dosen tidak boleh sama.',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -139,6 +141,8 @@ class PengampuController extends Controller
             'kelas_id' => 'required|exists:kelas,id',
             'tahun_akademik' => 'required',
             'prodi_id' => 'required|exists:prodi,id',
+        ], [
+            'dosen2.different' => 'Dosen tidak boleh sama.',
         ]);
 
         DB::transaction(function () use ($request, $pengampu) {

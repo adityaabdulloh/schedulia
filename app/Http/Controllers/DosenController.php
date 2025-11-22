@@ -314,8 +314,11 @@ class DosenController extends Controller
 
         // Get students enrolled in this specific Pengampu (course)
         $mahasiswas = Mahasiswa::whereHas('pengambilanMk', function ($query) use ($pengampu) {
+            $query->where('pengampu_id', $pengampu->id)
+                ->where('status', 'approved'); // Filter by approved status
+        })->with(['prodi', 'pengambilanMk' => function ($query) use ($pengampu) {
             $query->where('pengampu_id', $pengampu->id);
-        })->with('prodi')->get(); // Eager load prodi for display
+        }])->get(); // Eager load prodi and the relevant pengambilanMk
 
         // Get all JadwalKuliah for this Pengampu, ensuring they have required relations
         $jadwalKuliahs = JadwalKuliah::where('pengampu_id', $pengampu->id)

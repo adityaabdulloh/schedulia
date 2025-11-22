@@ -49,3 +49,110 @@
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
+
+/* Styles for Pengumuman Penting */
+.pengumuman-list {
+    display: grid;
+    gap: 15px; // Space between announcement cards
+}
+
+.announcement-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border-left: 5px solid; // Will be overridden by type-specific borders
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+}
+
+.announcement-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.announcement-icon {
+    font-size: 1.8rem;
+    margin-right: 15px;
+    width: 35px; // Fixed width for alignment
+    text-align: center;
+}
+
+.announcement-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+}
+
+.announcement-meta {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.announcement-type-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: capitalize;
+    margin-top: 5px;
+}
+
+.announcement-content {
+    margin-bottom: 15px;
+    p {
+        margin: 0;
+        line-height: 1.6;
+        color: #555;
+    }
+}
+
+.announcement-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #888;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+    margin-top: 10px;
+}
+
+/* Type-specific styles */
+.announcement-card.info-type {
+    border-left-color: #17a2b8; // Info blue
+    .announcement-icon { color: #17a2b8; }
+    .announcement-type-badge.info {
+        background-color: #e0f7fa; // Light info blue
+        color: #007b8e;
+    }
+}
+
+.announcement-card.warning-type {
+    border-left-color: #ffc107; // Warning yellow
+    .announcement-icon { color: #ffc107; }
+    .announcement-type-badge.warning {
+        background-color: #fff3cd; // Light warning yellow
+        color: #856404;
+    }
+}
+
+.announcement-card.danger-type {
+    border-left-color: #dc3545; // Danger red
+    .announcement-icon { color: #dc3545; }
+    .announcement-type-badge.danger {
+        background-color: #f8d7da; // Light danger red
+        color: #721c24;
+    }
+}
+
+/* Adjustments for the widget-card containing announcements */
+.widget-card.warning-border {
+    border-left: none; // Remove default border as cards have their own
+}

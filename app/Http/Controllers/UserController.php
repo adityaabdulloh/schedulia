@@ -108,22 +108,83 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+        $prodis = Prodi::all();
+        $kelases = Kelas::all();
+        return view('users.edit', compact('user', 'prodis', 'kelases'));
     }
 
     public function update(Request $request, User $user)
     {
-        $request->validate([
+        $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
             'role' => 'required|string|in:admin,dosen,mahasiswa',
-        ]);
+        ];
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'role' => $request->role,
-        ]);
+        if ($request->filled('password')) {
+            $rules['password'] = 'nullable|string|min:8|confirmed'; // Changed to nullable
+        }
+
+        if ($request->role === 'mahasiswa') {
+            $rules['nim'] = 'required|string|unique:mahasiswa,nim,'.($user->mahasiswa->id ?? 'NULL').',id';
+            $rules['prodi_id'] = 'required|exists:prodi,id';
+            $rules['semester'] = 'required|integer|min:1';
+            $rules['kelas_id'] = 'required|exists:kelas,id';
+        } elseif ($request->role === 'dosen') {
+            $rules['nip'] = 'required|string|unique:dosen,nip,'.($user->dosen->id ?? 'NULL').',id';
+            $rules['prodi_id_dosen'] = 'required|exists:prodi,id';
+        }
+
+        $request->validate($rules);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->role = $request->role;
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+        $user->save();
+
+        // Update or create associated Mahasiswa/Dosen record
+        if ($user->role === 'mahasiswa') {
+            $user->mahasiswa()->updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'nama' => $user->name,
+                    'nim' => $request->nim,
+                    'prodi_id' => $request->prodi_id,
+                    'semester' => $request->semester,
+                    'kelas_id' => $request->kelas_id,
+                ]
+            );
+            // If role changed from dosen to mahasiswa, delete dosen record
+            if ($user->dosen) {
+                $user->dosen->delete();
+            }
+        } elseif ($user->role === 'dosen') {
+            $user->dosen()->updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'nama' => $user->name,
+                    'email' => $user->email,
+                    'nip' => $request->nip,
+                    'prodi_id' => $request->prodi_id_dosen,
+                ]
+            );
+            // If role changed from mahasiswa to dosen, delete mahasiswa record
+            if ($user->mahasiswa) {
+                $user->mahasiswa->delete();
+            }
+        } else {
+            // If role is admin, delete any associated mahasiswa or dosen records
+            if ($user->mahasiswa) {
+                $user->mahasiswa->delete();
+            }
+            if ($user->dosen) {
+                $user->dosen->delete();
+            }
+        }
 
         return redirect()->route('users.index')->with('success', 'User berhasil diperbarui.');
     }

@@ -11,7 +11,15 @@
                         <a href="{{ route('jadwaldosen.index') }}" class="btn btn-success btn-sm">Buat Pengumuman</a>
                     </div>
                     <form action="{{ route('pengumuman.index') }}" method="GET" class="d-flex">
-                        <input type="text" name="search" class="form-control" placeholder="Pencarian..." value="{{ request('search') }}">
+                        <input type="text" name="matakuliah" class="form-control" placeholder="Mata Kuliah..." value="{{ request('matakuliah') }}">
+                        
+                        <select name="tipe" class="form-control ms-2">
+                            <option value="">Semua Tipe</option>
+                            <option value="perubahan" {{ request('tipe') == 'perubahan' ? 'selected' : '' }}>Perubahan</option>
+                            <option value="pembatalan" {{ request('tipe') == 'pembatalan' ? 'selected' : '' }}>Pembatalan</option>
+                            <option value="informasi" {{ request('tipe') == 'informasi' ? 'selected' : '' }}>Informasi</option>
+                        </select>
+
                         <button type="submit" class="btn btn-primary ms-2">Search</button>
                     </form>
                 </div>

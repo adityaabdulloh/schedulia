@@ -124,13 +124,6 @@
                 </div>
 
                 <div class="card-body">
-                    @if(session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
-                    @if(session('error'))
-                        <div class="alert alert-danger">{{ session('error') }}</div>
-                    @endif
-
                     <div class="table-responsive">
                         <table class="table table-striped table-hover">
                             <thead>
@@ -190,3 +183,21 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    @if(session('error') == 'SKS melebihi batas maksimum (24 SKS).')
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal Menambahkan Mata Kuliah',
+            text: '{{ session('error') }}',
+        });
+    @elseif(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '{{ session('error') }}',
+        });
+    @endif
+</script>
+@endpush

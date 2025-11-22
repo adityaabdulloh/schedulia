@@ -49,6 +49,7 @@
                                 <th>NIM</th>
                                 <th>Nama</th>
                                 <th>Program Studi</th>
+                                <th>Status KRS</th>
                                 <th>Status Absensi</th>
                             </tr>
                         </thead>
@@ -62,6 +63,21 @@
                                 </td>
                                 <td>{{ $mahasiswa->nama }}</td>
                                 <td>{{ $mahasiswa->prodi->nama_prodi ?? 'N/A' }}</td>
+                                <td>
+                                    @php
+                                        $pengambilanMk = $mahasiswa->pengambilanMk->first();
+                                        $status = $pengambilanMk ? $pengambilanMk->status : 'N/A';
+                                        $badgeClass = 'badge-secondary';
+                                        if ($status === 'approved') {
+                                            $badgeClass = 'badge-success';
+                                        } elseif ($status === 'pending') {
+                                            $badgeClass = 'badge-warning';
+                                        } elseif ($status === 'rejected') {
+                                            $badgeClass = 'badge-danger';
+                                        }
+                                    @endphp
+                                    <span class="badge {{ $badgeClass }}">{{ ucfirst($status) }}</span>
+                                </td>
                                 <td>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="absensi[{{ $mahasiswa->id }}]" id="hadir_{{ $mahasiswa->id }}" value="hadir" checked>
@@ -83,7 +99,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="text-center">Tidak ada mahasiswa yang mengambil mata kuliah ini.</td>
+                                <td colspan="5" class="text-center">Tidak ada mahasiswa yang mengambil mata kuliah ini.</td>
                             </tr>
                             @endforelse
                         </tbody>

@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'required' => 'field ini tidak boleh kosong',
+    'required' => 'bidang ini harus diisi',
 ];

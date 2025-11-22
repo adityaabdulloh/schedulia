@@ -138,12 +138,10 @@
                         const allDosens = data.dosens;
 
                         // Function to populate dosen2 based on dosen1 selection
-                        function populateDosen2(selectedDosen1Id) {
+                        function populateDosen2() {
                             dosen2Select.innerHTML = '<option value="">Pilih Dosen 2</option>';
                             allDosens.forEach(dosen => {
-                                if (dosen.id != selectedDosen1Id) {
-                                    dosen2Select.innerHTML += `<option value="${dosen.id}">${dosen.nama}</option>`;
-                                }
+                                dosen2Select.innerHTML += `<option value="${dosen.id}">${dosen.nama}</option>`;
                             });
                         }
 
@@ -152,7 +150,45 @@
 
                         // Add event listener for dosen1 to filter dosen2
                         dosen1Select.addEventListener('change', function() {
-                            populateDosen2(this.value);
+                            const selectedDosen1 = this.value;
+                            const selectedDosen2 = dosen2Select.value;
+                            
+                            // Enable all options in dosen2Select first
+                            for (let option of dosen2Select.options) {
+                                option.disabled = false;
+                            }
+
+                            if (selectedDosen1) {
+                                const optionToDisable = dosen2Select.querySelector(`option[value="${selectedDosen1}"]`);
+                                if (optionToDisable) {
+                                    optionToDisable.disabled = true;
+                                }
+                            }
+                            
+                            if (selectedDosen1 === selectedDosen2) {
+                                dosen2Select.value = "";
+                            }
+                        });
+
+                        dosen2Select.addEventListener('change', function() {
+                            const selectedDosen2 = this.value;
+                            const selectedDosen1 = dosen1Select.value;
+
+                            // Enable all options in dosen1Select first
+                            for (let option of dosen1Select.options) {
+                                option.disabled = false;
+                            }
+
+                            if (selectedDosen2) {
+                                const optionToDisable = dosen1Select.querySelector(`option[value="${selectedDosen2}"]`);
+                                if (optionToDisable) {
+                                    optionToDisable.disabled = true;
+                                }
+                            }
+                            
+                            if (selectedDosen2 === selectedDosen1) {
+                                dosen1Select.value = "";
+                            }
                         });
 
                         // Fetch and populate Kelas

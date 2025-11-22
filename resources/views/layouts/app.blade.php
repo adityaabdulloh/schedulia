@@ -108,13 +108,9 @@
     @if(session('error'))
     <script>
         Swal.fire({
-            toast: true,
-            position: 'top-end',
             icon: 'error',
-            title: '{{ session('error') }}',
-            showConfirmButton: false,
-            timer: 3500,
-            timerProgressBar: true
+            title: 'Oops...',
+            text: '{{ session('error') }}',
         });
     </script>
     @endif
