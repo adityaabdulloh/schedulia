@@ -130,7 +130,7 @@
                     <h2 class="widget-title"><i class="fas fa-bullhorn"></i>Pengumuman Penting</h2>
                 </div>
                 <div class="pengumuman-list">
-                    @forelse($pengumuman as $item)
+                    @forelse($pengumumans as $item)
                         @php
                             $cardClass = 'info-type'; $iconClass = 'fas fa-info-circle'; $badgeClass = 'info';
                             if ($item->tipe == 'perubahan') { $cardClass = 'warning-type'; $iconClass = 'fas fa-exclamation-triangle'; $badgeClass = 'warning'; }
@@ -230,48 +230,87 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Listen for new announcements
     if (window.Echo) {
-        const kelasId = {{ $mahasiswa->kelas_id ?? 'null' }};
-        if (kelasId) {
-            window.Echo.private(`kelas.${kelasId}`)
+        const mahasiswa_id = {{ Auth::id() }};
+        if (mahasiswa_id) {
+            window.Echo.private(`mahasiswa.${mahasiswa_id}`)
                 .listen('.pengumuman-baru', (e) => {
                     console.log('Pengumuman baru diterima:', e);
                     
+                    const pengumuman = e.pengumuman;
+                    const mataKuliah = e.mataKuliah;
+                    const dosen = e.dosen;
+
                     // Determine icon and color based on tipe
                     let icon = 'info';
                     let title = 'Informasi Baru';
-                    if (e.pengumuman.tipe === 'perubahan') {
+                    let borderColor = '#36a2cd';
+                    if (pengumuman.tipe === 'perubahan') {
                         icon = 'warning';
                         title = 'Perubahan Jadwal';
-                    } else if (e.pengumuman.tipe === 'pembatalan') {
+                        borderColor = '#ffc107';
+                    } else if (pengumuman.tipe === 'pembatalan') {
                         icon = 'error';
                         title = 'Pembatalan Kelas';
+                        borderColor = '#dc3545';
                     }
 
+                    // Play notification sound
+                    // const audio = new Audio('path/to/notification.mp3');
+                    // audio.play();
+
                     Swal.fire({
+                        title: `<strong>${title}</strong>`,
                         icon: icon,
-                        title: title,
                         html: `
-                            <p class="mb-1">${e.pengumuman.pesan}</p>
-                            <small class="text-muted">Silakan cek halaman pengumuman untuk detail.</small>
+                            <div class="text-start">
+                                <p class="mb-2"><strong>Mata Kuliah:</strong> ${mataKuliah}</p>
+                                <p class="mb-2"><strong>Dosen:</strong> ${dosen}</p>
+                                <p class="mb-0">${pengumuman.pesan}</p>
+                            </div>
                         `,
+                        showCloseButton: true,
+                        showCancelButton: true,
+                        focusConfirm: false,
+                        confirmButtonText: '<i class="fas fa-eye"></i> Lihat',
+                        confirmButtonAriaLabel: 'Lihat pengumuman',
+                        cancelButtonText: 'Tutup',
+                        cancelButtonAriaLabel: 'Tutup',
                         toast: true,
                         position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 10000,
+                        showConfirmButton: true,
+                        timer: 15000,
                         timerProgressBar: true,
+                        customClass: {
+                            popup: 'swal2-toast-custom',
+                            header: 'swal2-toast-header-custom',
+                            title: 'swal2-toast-title-custom',
+                            htmlContainer: 'swal2-toast-html-container-custom',
+                        },
                         didOpen: (toast) => {
                             toast.addEventListener('mouseenter', Swal.stopTimer)
                             toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        },
+                        willClose: () => {
+                            // Optional: remove the toast from the DOM
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Redirect to the announcement page
+                            // window.location.href = `/pengumuman/${pengumuman.id}`;
+                            
+                            // For now, just reload the page
+                            window.location.reload();
                         }
                     });
 
                     // Optional: refresh the page to show the new announcement in the list
+                    // This is now handled by the "Lihat" button
                     // setTimeout(() => {
                     //     window.location.reload();
                     // }, 5000); 
                 });
         } else {
-            console.log('Echo listener: Mahasiswa kelas ID not found.');
+            console.log('Echo listener: User ID not found.');
         }
     } else {
         console.log('Laravel Echo not found. Real-time updates disabled.');

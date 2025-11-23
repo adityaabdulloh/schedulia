@@ -74,6 +74,9 @@ class PengumumanController extends Controller
             'pesan' => $request->pesan,
         ]);
 
+        // Eager load relationships for the broadcast
+        $pengumuman->load('jadwalKuliah.pengampu.matakuliah', 'dosen');
+
         // Broadcast the new announcement event
         event(new PengumumanBaru($pengumuman));
 
@@ -83,17 +86,35 @@ class PengumumanController extends Controller
     public function indexForMahasiswa()
     {
         $mahasiswa = Auth::user()->mahasiswa;
-        $kelasId = $mahasiswa->kelas_id;
 
-        // Ambil semua jadwal kuliah untuk kelas mahasiswa
-        $jadwalKuliahIds = JadwalKuliah::where('kelas_id', $kelasId)->pluck('id');
+        // Get all pengampu_id that the student is approved for
+        $pengampuIds = $mahasiswa->pengambilanMk()
+            ->where('status', 'approved')
+            ->pluck('pengampu_id');
 
-        // Ambil pengumuman yang terkait dengan jadwal kuliah tersebut
+        // Get all jadwal_kuliah_id for the approved courses
+        $jadwalKuliahIds = JadwalKuliah::whereIn('pengampu_id', $pengampuIds)
+            ->pluck('id');
+
+        // Get announcements related to those schedules
         $pengumumans = Pengumuman::with('jadwalKuliah.pengampu.matakuliah', 'dosen')
             ->whereIn('jadwal_kuliah_id', $jadwalKuliahIds)
             ->latest()
             ->paginate(10);
 
-        return view('pengumuman.index-mahasiswa', compact('pengumumans'));
+        // Get schedule for today
+        $hariIni = now()->dayOfWeek; // Sunday = 0, Monday = 1, etc.
+        $jadwalHariIni = JadwalKuliah::whereIn('id', $jadwalKuliahIds)
+            ->where('hari_id', $hariIni)
+            ->orderBy('jam_mulai')
+            ->get();
+
+        // Get schedule for the week
+        $jadwalSeminggu = JadwalKuliah::whereIn('id', $jadwalKuliahIds)
+            ->with('hari')
+            ->get()
+            ->groupBy('hari.nama');
+
+        return view('dashboard-mahasiswa', compact('pengumumans', 'jadwalHariIni', 'jadwalSeminggu', 'mahasiswa'));
     }
 }
