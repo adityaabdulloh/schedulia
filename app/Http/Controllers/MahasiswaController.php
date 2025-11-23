@@ -91,7 +91,7 @@ class MahasiswaController extends Controller
         }
 
         // Get latest announcements for the student's class
-        $pengumuman = Pengumuman::whereHas('jadwalKuliah', function ($query) use ($mahasiswa) {
+        $pengumumans = Pengumuman::whereHas('jadwalKuliah', function ($query) use ($mahasiswa) {
             $query->where('kelas_id', $mahasiswa->kelas_id);
         })
             ->with(['dosen', 'jadwalKuliah.pengampu.matakuliah'])
@@ -115,7 +115,7 @@ class MahasiswaController extends Controller
         }
 
 
-        return view('dashboard-mahasiswa', compact('mahasiswa', 'jadwalHariIni', 'pengumuman', 'jadwalSeminggu'));
+        return view('dashboard-mahasiswa', compact('mahasiswa', 'jadwalHariIni', 'pengumumans', 'jadwalSeminggu'));
     }
 
     // Menampilkan form untuk menambah mahasiswa
