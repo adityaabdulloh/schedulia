@@ -44,7 +44,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/pengambilanmk/validation/{id}/update-status', [PengambilanMKController::class, 'updateStatus'])->name('admin.pengambilanmk.validation.updateStatus');
 
     Route::get('/admin/mahasiswa/{mahasiswa}/krs', [PengambilanMKController::class, 'showStudentKRS'])->name('admin.mahasiswa.krs.show');
-    Route::post('/admin/mahasiswa/{mahasiswa}/krs/approve-all', [PengambilanMKController::class, 'approveAllPending'])->name('admin.pengambilanmk.approveAll');
+    Route::post('/admin/mahasiswa/{mahasiswa}/krs/approve-all', [PengambilanMKController::class, 'approveAllPending'])->name('admin.mahasiswa.krs.approveAll');
     // Moved Route::resource('mahasiswa', MahasiswaController::class); here
     Route::resource('mahasiswa', MahasiswaController::class);
     Route::get('/pengambilan-mk', [PengambilanMKController::class, 'indexForAdmin'])->name('admin.pengambilan-mk.index');

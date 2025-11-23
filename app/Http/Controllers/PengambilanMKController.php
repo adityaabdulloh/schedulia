@@ -265,7 +265,9 @@ class PengambilanMKController extends Controller
 
     public function showStudentKRS(Mahasiswa $mahasiswa)
     {
-        $pengambilanMKs = PengambilanMK::where('mahasiswa_id', $mahasiswa->id)->with('matakuliah')->get();
+        $pengambilanMKs = PengambilanMK::where('mahasiswa_id', $mahasiswa->id)
+            ->with(['matakuliah', 'pengampu.dosen']) // Added 'pengampu.dosen'
+            ->get();
 
         return view('pengambilanmk.student_krs_detail', compact('pengambilanMKs', 'mahasiswa'));
     }
