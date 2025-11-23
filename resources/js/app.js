@@ -71,6 +71,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         // Re-apply desktop state on resize
         applyDesktopSidebarState();
+
+        // Force reflow of sidebar content after resize to fix scrolling issue
+        setTimeout(() => {
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                // Trigger reflow
+                sidebar.offsetHeight; 
+            }
+        }, 50); // Small delay to allow DOM to update
     });
 
 

@@ -5,13 +5,13 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h3 style="color: white;">KRS Mahasiswa: {{ $mahasiswa->nama }} ({{ $mahasiswa->nim }})</h3>
-                    <div>
-                        <a href="{{ route('mahasiswa.index') }}" class="btn btn-secondary">Kembali ke Daftar Mahasiswa</a>
-                        <form action="{{ route('admin.pengambilanmk.approveAll', $mahasiswa->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui semua mata kuliah yang tertunda untuk mahasiswa ini?');">
+                <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-md-between align-items-md-center">
+                    <h3 class="mb-2 mb-md-0">KRS Mahasiswa: {{ $mahasiswa->nama }} ({{ $mahasiswa->nim }})</h3>
+                    <div class="d-flex flex-column flex-md-row">
+                        <a href="{{ route('mahasiswa.index') }}" class="btn btn-secondary w-100 w-md-auto mb-2 mb-md-0">Kembali ke Daftar Mahasiswa</a>
+                        <form action="{{ route('admin.pengambilanmk.approveAll', $mahasiswa->id) }}" method="POST" class="w-100 w-md-auto ms-md-2" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui semua mata kuliah yang tertunda untuk mahasiswa ini?');">
                             @csrf
-                            <button type="submit" class="btn btn-success ms-2">
+                            <button type="submit" class="btn btn-success w-100">
                                 <i class="bi bi-check-all"></i> Setujui Semua Mata Kuliah
                             </button>
                         </form>
@@ -51,22 +51,22 @@
                                             <span class="badge bg-danger"><i class="bi bi-x-circle-fill me-1"></i><strong>{{ ucfirst('Ditolak') }}</strong></span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="d-flex flex-column flex-md-row align-items-center justify-content-md-start">
                                         @if($pengambilanMK->status == 'pending')
-                                            <form action="{{ route('admin.pengambilanmk.validation.updateStatus', $pengambilanMK->id) }}" method="POST" style="display:inline-block;">
+                                            <form action="{{ route('admin.pengambilanmk.validation.updateStatus', $pengambilanMK->id) }}" method="POST" class="w-100 w-md-auto mb-2 mb-md-0 me-md-2">
                                                 @csrf
                                                 <input type="hidden" name="status" value="approved">
-                                                <button type="submit" class="btn btn-success btn-icon-split btn-sm">
+                                                <button type="submit" class="btn btn-success btn-icon-split btn-sm w-100">
                                                     <span class="icon text-white-50">
                                                         <i class="bi bi-check-lg"></i>
                                                     </span>
                                                     <span class="text">Setujui</span>
                                                 </button>
                                             </form>
-                                            <form action="{{ route('admin.pengambilanmk.validation.updateStatus', $pengambilanMK->id) }}" method="POST" style="display:inline-block;">
+                                            <form action="{{ route('admin.pengambilanmk.validation.updateStatus', $pengambilanMK->id) }}" method="POST" class="w-100 w-md-auto">
                                                 @csrf
                                                 <input type="hidden" name="status" value="rejected">
-                                                <button type="submit" class="btn btn-danger btn-icon-split btn-sm">
+                                                <button type="submit" class="btn btn-danger btn-icon-split btn-sm w-100">
                                                     <span class="icon text-white-50">
                                                         <i class="bi bi-x-lg"></i>
                                                     </span>

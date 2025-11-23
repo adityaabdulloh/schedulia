@@ -86,25 +86,25 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-6 mb-3">
+                        <div class="col-12 col-sm-6 mb-3">
                             <a href="{{ route('dosen.create') }}" class="quick-action-btn text-decoration-none">
                                 <i class="bi bi-person-plus-fill"></i>
                                 <span>Tambah Dosen</span>
                             </a>
                         </div>
-                        <div class="col-6 mb-3">
+                        <div class="col-12 col-sm-6 mb-3">
                             <a href="{{ route('mahasiswa.create') }}" class="quick-action-btn text-decoration-none">
                                 <i class="bi bi-person-vcard"></i>
                                 <span>Tambah Mahasiswa</span>
                             </a>
                         </div>
-                        <div class="col-6">
+                        <div class="col-12 col-sm-6">
                             <a href="{{ route('jadwal.create') }}" class="quick-action-btn text-decoration-none">
                                 <i class="bi bi-calendar-plus"></i>
                                 <span>Buat Jadwal</span>
                             </a>
                         </div>
-                        <div class="col-6">
+                        <div class="col-12 col-sm-6">
                             <a href="{{ route('admin.pengambilanmk.validation.index') }}" class="quick-action-btn text-decoration-none">
                                 <i class="bi bi-check2-circle"></i>
                                 <span>Validasi KRS</span>

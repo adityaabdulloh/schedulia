@@ -5,7 +5,7 @@
 
 <div class="container-fluid">
     <!-- Welcome Header -->
-    <div class="welcome-message-box mb-4">
+    <div class="welcome-message-box mb-4 flex flex-col sm:flex-row items-center sm:items-start p-4">
         <div class="icon">
             <i class="fas fa-sun"></i>
         </div>
@@ -29,7 +29,7 @@
                             <div class="timeline-item jadwal-item">
                                 <div class="timeline-marker"></div>
                                 <div class="timeline-content">
-                                    <div class="d-flex justify-content-between align-items-start">
+                                    <div class="d-flex justify-content-between align-items-start flex-wrap">
                                         <div class="jadwal-info">
                                             <div class="jadwal-matkul">{{ $jadwal->pengampu->matakuliah->nama }}</div>
                                             <h6 class="text-success font-weight-bold"><i class="fas fa-calendar-day mr-1"></i>{{ $jadwal->hari->nama_hari }}</h6>

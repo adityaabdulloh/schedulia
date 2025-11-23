@@ -221,7 +221,8 @@ body.sidebar-mobile-open .sidebar-backdrop {
 
     .sidebar {
         transform: translateX(-100%);
-        z-index: 1040;
+        z-index: 9999; /* Increased z-index to ensure it's on top */
+        pointer-events: auto; /* Ensure sidebar is always clickable when visible */
     }
 
     body.sidebar-mobile-open .sidebar {
@@ -417,4 +418,13 @@ body.sidebar-mobile-open .sidebar-backdrop {
 .table-header-custom {
     color: black;
     background-color: #d9edfc;
+}
+
+/* Temporary Diagnostic Styles */
+body.sidebar-mobile-open {
+    background-color: rgba(255, 0, 0, 0.2) !important; /* Red overlay to see if body is active */
+}
+
+body.sidebar-mobile-open .sidebar {
+    background-color: rgba(0, 255, 0, 0.5) !important; /* Green overlay to see sidebar */
 }

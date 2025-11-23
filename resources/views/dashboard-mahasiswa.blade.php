@@ -8,7 +8,7 @@
     </div>
 
     <!-- Welcome Message -->
-    <div class="welcome-message-box mb-4">
+    <div class="welcome-message-box mb-4 flex flex-col sm:flex-row items-center sm:items-start p-4">
         <div class="icon">
             <i class="fas fa-sun"></i>
         </div>
@@ -29,7 +29,7 @@
                 </div>
                 <ul class="jadwal-list">
                     @forelse($jadwalHariIni as $jadwal)
-                        <li class="jadwal-item" data-start="{{ $jadwal->jam_mulai }}" data-end="{{ $jadwal->jam_selesai }}">
+                        <li class="jadwal-item flex-wrap" data-start="{{ $jadwal->jam_mulai }}" data-end="{{ $jadwal->jam_selesai }}">
                             <div class="jadwal-info">
                                 <div class="jadwal-matkul">{{ $jadwal->pengampu->matakuliah->nama }}</div>
                                 <small class="text-muted">
@@ -72,7 +72,7 @@
                         <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ strtolower($hari) }}" role="tabpanel">
                             <ul class="jadwal-list">
                                 @forelse($jadwalSeminggu[$hari] ?? [] as $jadwal)
-                                    <li class="jadwal-item">
+                                    <li class="jadwal-item flex-wrap">
                                         <div class="jadwal-info">
                                             <div class="jadwal-matkul">{{ $jadwal->pengampu->matakuliah->nama }}</div>
                                             <small class="text-muted">

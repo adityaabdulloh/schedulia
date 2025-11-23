@@ -84,6 +84,7 @@
     </div>
 
     <!-- Main Content Wrapper -->
+    <div class="sidebar-backdrop"></div>
     <div class="main-wrapper @guest main-wrapper-guest @endguest">
         <!-- Main Content -->
         <div class="main-content">
@@ -122,5 +123,48 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 @stack('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebarBackdrop = document.querySelector('.sidebar-backdrop');
+        const body = document.body;
+
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', function() {
+                body.classList.toggle('sidebar-mobile-open');
+            });
+        }
+
+        if (sidebarBackdrop) {
+            sidebarBackdrop.addEventListener('click', function() {
+                body.classList.remove('sidebar-mobile-open');
+            });
+        }
+
+        // Optional: Close sidebar on wider screens if it was open in mobile view
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 991.98 && body.classList.contains('sidebar-mobile-open')) {
+                body.classList.remove('sidebar-mobile-open');
+            }
+        });
+    });
+
+    function confirmLogout(formId) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda akan keluar dari sesi ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Keluar!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(formId).submit();
+            }
+        })
+    }
+</script>
 </body>
 </html>
