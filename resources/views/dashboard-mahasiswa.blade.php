@@ -230,9 +230,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Listen for new announcements
     if (window.Echo) {
-        const kelasId = {{ $mahasiswa->kelas_id ?? 'null' }};
-        if (kelasId) {
-            window.Echo.private(`kelas.${kelasId}`)
+        const mahasiswaId = {{ $mahasiswa->id ?? 'null' }}; // Get the Mahasiswa ID
+        if (mahasiswaId) {
+            window.Echo.private(`mahasiswa.${mahasiswaId}`) // Listen to the private channel for this specific Mahasiswa
                 .listen('.pengumuman-baru', (e) => {
                     console.log('Pengumuman baru diterima:', e);
                     
@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // }, 5000); 
                 });
         } else {
-            console.log('Echo listener: Mahasiswa kelas ID not found.');
+            console.log('Echo listener: Mahasiswa ID not found.');
         }
     } else {
         console.log('Laravel Echo not found. Real-time updates disabled.');

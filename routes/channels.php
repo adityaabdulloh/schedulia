@@ -25,3 +25,12 @@ Broadcast::channel('kelas.{kelasId}', function ($user, $kelasId) {
     }
     return false;
 });
+
+Broadcast::channel('mahasiswa.{mahasiswaId}', function ($user, $mahasiswaId) {
+    // Check if the user is authenticated and is a mahasiswa
+    if ($user->role === 'mahasiswa' && $user->mahasiswa) {
+        // Check if the authenticated user's mahasiswa ID matches the channel's mahasiswaId
+        return (int) $user->mahasiswa->id === (int) $mahasiswaId;
+    }
+    return false;
+});

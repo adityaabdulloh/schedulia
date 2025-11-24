@@ -34,8 +34,24 @@ class PengumumanBaru implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        $kelasId = $this->pengumuman->jadwalKuliah->kelas_id;
-        return new PrivateChannel('kelas.' . $kelasId);
+        $jadwalKuliah = $this->pengumuman->jadwalKuliah;
+        $kelasId = $jadwalKuliah->kelas_id;
+        $matakuliahId = $jadwalKuliah->pengampu->matakuliah_id;
+
+        $approvedMahasiswaIds = \App\Models\PengambilanMK::where('matakuliah_id', $matakuliahId)
+            ->where('status', 'approved')
+            ->join('mahasiswa', 'pengambilan_mk.mahasiswa_id', '=', 'mahasiswa.id')
+            ->where('mahasiswa.kelas_id', $kelasId)
+            ->pluck('pengambilan_mk.mahasiswa_id')
+            ->unique()
+            ->toArray();
+
+        $channels = [];
+        foreach ($approvedMahasiswaIds as $mahasiswaId) {
+            $channels[] = new PrivateChannel('mahasiswa.' . $mahasiswaId);
+        }
+
+        return $channels;
     }
 
     public function broadcastAs()

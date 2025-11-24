@@ -90,9 +90,9 @@ class MahasiswaController extends Controller
                 ->get();
         }
 
-        // Get latest announcements for the student's class
-        $pengumuman = Pengumuman::whereHas('jadwalKuliah', function ($query) use ($mahasiswa) {
-            $query->where('kelas_id', $mahasiswa->kelas_id);
+        // Get latest announcements for the student's approved courses
+        $pengumuman = Pengumuman::whereHas('jadwalKuliah.pengampu', function ($query) use ($approvedMatakuliahIds) {
+            $query->whereIn('matakuliah_id', $approvedMatakuliahIds);
         })
             ->with(['dosen', 'jadwalKuliah.pengampu.matakuliah'])
             ->latest()

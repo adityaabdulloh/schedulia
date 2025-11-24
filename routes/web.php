@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\TestEvent;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -21,6 +22,11 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DosenMahasiswaController;
 use App\Models\Mahasiswa;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/pusher-test-trigger', function () {
+    event(new TestEvent());
+    return "Event has been sent!";
+});
 
 Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
     Route::get('dashboard-mahasiswa', [MahasiswaController::class, 'studentDashboard'])->name('mahasiswa.dashboard');
@@ -139,6 +145,9 @@ Route::get('password/reset/{token}', [ResetPasswordController::class, 'showReset
 Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 Route::view('/unauthorized', 'unauthorized')->name('unauthorized');
+
+Route::view('/pusher-test', 'pusher-test');
+
 
 
 

@@ -1,13 +1,12 @@
+import './bootstrap';
+import * as bootstrap from 'bootstrap'; // Import all of Bootstrap as 'bootstrap'
+window.bootstrap = bootstrap; // Expose Bootstrap globally
+
 document.addEventListener('DOMContentLoaded', function () {
     const sidebarToggle = document.getElementById('sidebar-toggle');
     const body = document.body;
     const SIDEBAR_STATE_KEY = 'sidebar_collapsed';
     const MOBILE_BREAKPOINT = 991.98;
-
-    // Create and append the backdrop element
-    const backdrop = document.createElement('div');
-    backdrop.className = 'sidebar-backdrop';
-    body.appendChild(backdrop);
 
     // Function to handle sidebar state on desktop
     const applyDesktopSidebarState = () => {
@@ -29,23 +28,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (sidebarToggle) {
         sidebarToggle.addEventListener('click', () => {
             if (window.innerWidth <= MOBILE_BREAKPOINT) {
-                // Mobile behavior
                 body.classList.toggle('sidebar-mobile-open');
             } else {
-                // Desktop behavior
                 body.classList.toggle('sidebar-collapsed');
                 const isCollapsed = body.classList.contains('sidebar-collapsed');
                 localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed);
             }
         });
     }
-
-    // Backdrop click listener to close mobile sidebar
-    backdrop.addEventListener('click', () => {
-        if (body.classList.contains('sidebar-mobile-open')) {
-            body.classList.remove('sidebar-mobile-open');
-        }
-    });
 
     // Window resize listener
     window.addEventListener('resize', () => {
